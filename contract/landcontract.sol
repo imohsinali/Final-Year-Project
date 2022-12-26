@@ -133,5 +133,39 @@ contract Land {
         }
     }
 
+    function isUserRegistered(address _addr) public view returns(bool)
+    {
+        if(RegisteredUserMapping[_addr]){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function registerUser(string memory _name, uint _age, string memory _city,string memory _aadharNumber, string memory _panNumber, string memory _document, string memory _email
+    ) public {
+
+        require(!RegisteredUserMapping[msg.sender]);
+
+        RegisteredUserMapping[msg.sender] = true;
+        userCount++;
+        allUsersList[1].push(msg.sender);
+        AllUsers[userCount]=msg.sender;
+        UserMapping[msg.sender] = User(msg.sender, _name, _age, _city,_aadharNumber,_panNumber, _document,_email,false);
+        //emit Registration(msg.sender);
+    }
+
+    function verifyUser(address _userId) public{
+        require(isLandInspector(msg.sender));
+        UserMapping[_userId].isUserVerified=true;
+    }
+    function isUserVerified(address id) public view returns(bool){
+        return UserMapping[id].isUserVerified;
+    }
+    function ReturnAllUserList() public view returns(address[] memory)
+    {
+        return allUsersList[1];
+    }
+
 
 }
