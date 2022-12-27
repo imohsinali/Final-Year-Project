@@ -165,7 +165,39 @@ contract Land {
     function ReturnAllUserList() public view returns(address[] memory)
     {
         return allUsersList[1];
+    }function addLand(uint _area, string memory _address, uint landPrice,string memory _allLatiLongi, uint _propertyPID,string memory _surveyNum, string memory _document) public {
+        require(isUserVerified(msg.sender));
+        landsCount++;
+        lands[landsCount] = Landreg(landsCount, _area, _address, landPrice,_allLatiLongi,_propertyPID, _surveyNum , _document,false,msg.sender,false);
+        MyLands[msg.sender].push(landsCount);
+        allLandList[1].push(landsCount);
+        // emit AddingLand(landsCount);
     }
+
+    function ReturnAllLandList() public view returns(uint[] memory)
+    {
+        return allLandList[1];
+    }
+
+    function verifyLand(uint _id) public{
+        require(isLandInspector(msg.sender));
+        lands[_id].isLandVerified=true;
+    }
+    function isLandVerified(uint id) public view returns(bool){
+        return lands[id].isLandVerified;
+    }
+
+    function myAllLands(address id) public view returns( uint[] memory){
+        return MyLands[id];
+    }
+
+
+    function makeItforSell(uint id) public{
+        require(lands[id].ownerAddress==msg.sender);
+        lands[id].isforSell=true;
+    }
+
+    
 
 
 }
