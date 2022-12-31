@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.7 <=0.9.7;
+pragma solidity >=0.5.0 <0.9.0;
+// pragma solidity ^0.8.0;
 
+contract  landregistry  {
+    address payable contractOwner;
 
-contract Land {
-    address contractOwner;
-
-    constructor() public{
-        contractOwner = msg.sender;
+    constructor() {
+        contractOwner = payable(msg.sender);
     }
+
 
     struct Landreg {
         uint id;
@@ -30,7 +31,7 @@ contract Land {
         string name;
         uint age;
         string city;
-        string aadharNumber;
+        string cinc;
         string panNumber;
         string document;
         string email;
@@ -90,8 +91,11 @@ contract Land {
     function changeContractOwner(address _addr)public {
         require(msg.sender==contractOwner,"you are not contractOwner");
 
-        contractOwner=_addr;
+        contractOwner=payable(_addr);
     }
+
+    //-----------------------------------------------LandInspector-----------------------------------------------
+
     function addLandInspector(address _addr,string memory _name, uint _age, string memory _designation,string memory _city) public returns(bool){
         if(contractOwner!=msg.sender)
             return false;
@@ -133,6 +137,10 @@ contract Land {
         }
     }
 
+
+
+    //-----------------------------------------------User-----------------------------------------------
+
     function isUserRegistered(address _addr) public view returns(bool)
     {
         if(RegisteredUserMapping[_addr]){
@@ -142,7 +150,7 @@ contract Land {
         }
     }
 
-    function registerUser(string memory _name, uint _age, string memory _city,string memory _aadharNumber, string memory _panNumber, string memory _document, string memory _email
+    function registerUser(string memory _name, uint _age, string memory _city,string memory _cinc, string memory _panNumber, string memory _document, string memory _email
     ) public {
 
         require(!RegisteredUserMapping[msg.sender]);
@@ -151,7 +159,7 @@ contract Land {
         userCount++;
         allUsersList[1].push(msg.sender);
         AllUsers[userCount]=msg.sender;
-        UserMapping[msg.sender] = User(msg.sender, _name, _age, _city,_aadharNumber,_panNumber, _document,_email,false);
+        UserMapping[msg.sender] = User(msg.sender, _name, _age, _city,_cinc,_panNumber, _document,_email,false);
         //emit Registration(msg.sender);
     }
 
@@ -166,10 +174,12 @@ contract Land {
     {
         return allUsersList[1];
     }
+
+
     function addLand(uint _area, string memory _address, uint landPrice,string memory _allLatiLongi, uint _propertyPID,string memory _surveyNum, string memory _document) public {
         require(isUserVerified(msg.sender));
         landsCount++;
-        lands[landsCount] = Landreg(landsCount, _area, _address, landPrice,_allLatiLongi,_propertyPID, _surveyNum , _document,false,msg.sender,false);
+        lands[landsCount] = Landreg(landsCount, _area, _address, landPrice,_allLatiLongi,_propertyPID, _surveyNum , _document,false,payable(msg.sender),false);
         MyLands[msg.sender].push(landsCount);
         allLandList[1].push(landsCount);
         // emit AddingLand(landsCount);
@@ -197,11 +207,12 @@ contract Land {
         require(lands[id].ownerAddress==msg.sender);
         lands[id].isforSell=true;
     }
+
     function requestforBuy(uint _landId) public
     {
         require(isUserVerified(msg.sender) && isLandVerified(_landId));
         requestCount++;
-        LandRequestMapping[requestCount]=LandRequest(requestCount,lands[_landId].ownerAddress,msg.sender,_landId,reqStatus.requested,false);
+        LandRequestMapping[requestCount]=LandRequest(requestCount,lands[_landId].ownerAddress,payable(msg.sender),_landId,reqStatus.requested,false);
         MyReceivedLandRequest[lands[_landId].ownerAddress].push(requestCount);
         MySentLandRequest[msg.sender].push(requestCount);
     }
@@ -234,8 +245,51 @@ contract Land {
     {
         return lands[id].landPrice;
     }
+        function makePayment(uint _requestId) public payable
+    {
+        require(LandRequestMapping[_requestId].buyerId==msg.sender && LandRequestMapping[_requestId].requestStatus==reqStatus.accepted);
 
-    
+        LandRequestMapping[_requestId].requestStatus=reqStatus.paymentdone;
+        //LandRequestMapping[_requestId].sellerId.transfer(lands[LandRequestMapping[_requestId].landId].landPrice);
+        //lands[LandRequestMapping[_requestId].landId].ownerAddress.transfer(lands[LandRequestMapping[_requestId].landId].landPrice);
+        lands[LandRequestMapping[_requestId].landId].ownerAddress.transfer(msg.value);
+        LandRequestMapping[_requestId].isPaymentDone=true;
+        paymentDoneList[1].push(_requestId);
+    }
 
+    function returnPaymentDoneList() public view returns(uint[] memory)
+    {
+        return paymentDoneList[1];
+    }
+
+    function transferOwnership(uint _requestId,string memory documentUrl) public returns(bool)
+    {
+        require(isLandInspector(msg.sender));
+        if(LandRequestMapping[_requestId].isPaymentDone==false)
+            return false;
+        documentId++;
+        LandRequestMapping[_requestId].requestStatus=reqStatus.commpleted;
+        MyLands[LandRequestMapping[_requestId].buyerId].push(LandRequestMapping[_requestId].landId);
+
+        uint len=MyLands[LandRequestMapping[_requestId].sellerId].length;
+        for(uint i=0;i<len;i++)
+        {
+            if(MyLands[LandRequestMapping[_requestId].sellerId][i]==LandRequestMapping[_requestId].landId)
+            {
+                MyLands[LandRequestMapping[_requestId].sellerId][i]=MyLands[LandRequestMapping[_requestId].sellerId][len-1];
+                //MyLands[LandRequestMapping[_requestId].sellerId].length--;
+                MyLands[LandRequestMapping[_requestId].sellerId].pop();
+                break;
+            }
+        }
+        lands[LandRequestMapping[_requestId].landId].document=documentUrl;
+        lands[LandRequestMapping[_requestId].landId].isforSell=false;
+        lands[LandRequestMapping[_requestId].landId].ownerAddress=LandRequestMapping[_requestId].buyerId;
+        return true;
+    }
+    function makePaymentTestFun(address payable _reveiver) public payable
+    {
+        _reveiver.transfer(msg.value);
+    }
 
 }
