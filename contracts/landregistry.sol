@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity =0.6.0 ;
+pragma solidity >=0.5.0 <0.9.0;
+// pragma solidity ^0.8.0;
 
-contract Land {
-    address contractOwner;
+contract  landregistry  {
+    address payable contractOwner;
 
-    constructor() public{
-        contractOwner = msg.sender;
+    constructor() {
+        contractOwner = payable(msg.sender);
     }
+
 
     struct Landreg {
         uint id;
@@ -89,7 +91,7 @@ contract Land {
     function changeContractOwner(address _addr)public {
         require(msg.sender==contractOwner,"you are not contractOwner");
 
-        contractOwner=_addr;
+        contractOwner=payable(_addr);
     }
 
     //-----------------------------------------------LandInspector-----------------------------------------------
@@ -174,11 +176,10 @@ contract Land {
     }
 
 
-    //-----------------------------------------------Land-----------------------------------------------
     function addLand(uint _area, string memory _address, uint landPrice,string memory _allLatiLongi, uint _propertyPID,string memory _surveyNum, string memory _document) public {
         require(isUserVerified(msg.sender));
         landsCount++;
-        lands[landsCount] = Landreg(landsCount, _area, _address, landPrice,_allLatiLongi,_propertyPID, _surveyNum , _document,false,msg.sender,false);
+        lands[landsCount] = Landreg(landsCount, _area, _address, landPrice,_allLatiLongi,_propertyPID, _surveyNum , _document,false,payable(msg.sender),false);
         MyLands[msg.sender].push(landsCount);
         allLandList[1].push(landsCount);
         // emit AddingLand(landsCount);
@@ -211,7 +212,7 @@ contract Land {
     {
         require(isUserVerified(msg.sender) && isLandVerified(_landId));
         requestCount++;
-        LandRequestMapping[requestCount]=LandRequest(requestCount,lands[_landId].ownerAddress,msg.sender,_landId,reqStatus.requested,false);
+        LandRequestMapping[requestCount]=LandRequest(requestCount,lands[_landId].ownerAddress,payable(msg.sender),_landId,reqStatus.requested,false);
         MyReceivedLandRequest[lands[_landId].ownerAddress].push(requestCount);
         MySentLandRequest[msg.sender].push(requestCount);
     }
