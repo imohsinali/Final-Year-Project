@@ -1,11 +1,14 @@
 
+import data from "../Data/adminData";
 export const initialState = {
 
-    basket: [],
+    basket: data,
+    adminState:[]
+}
 
   
 
-  };
+  
 
   
 
@@ -57,6 +60,7 @@ export const initialState = {
 
         };
 
+
     
 
       case "EMPTY_BASKET": {
@@ -64,6 +68,10 @@ export const initialState = {
         return { ...state, basket: [] };
 
       }
+      case "ADMIN_CONTRACT":{
+        return { ...state,adminState:action.payload}; 
+      }
+
 
       default:
 
