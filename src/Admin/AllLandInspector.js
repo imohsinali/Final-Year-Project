@@ -1,18 +1,16 @@
-import { DataTable } from "mantine-datatable";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function AllLandInspector() {
-  const data2 = useSelector((state) => state.basket);
-  
+  const {basket} = useSelector((state) => state.adminData);
+  console.log(basket)
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = data2.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = basket.slice(indexOfFirstPost, indexOfLastPost);
 
   // Change page
   const dispatch=useDispatch()

@@ -9,12 +9,21 @@ import Container from "@mui/material/Container";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { css } from "glamor";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
+import { ethers } from "ethers"
+
 
 const theme = createTheme();
 
 export default function AddLandInspector() {
+const {contract}    =  useSelector((state)=>state.adminData.adminState)
+
+  // ADMIN_CONTRACT
+
+  
+
+console.log("he",contract)
+
   let toastId = null;
   let dispatch=    useDispatch()
   
@@ -33,11 +42,12 @@ export default function AddLandInspector() {
       console.log("Toast already active");
     }
   }
-  
-  const handleSubmit = (event) => {
-  
+
+  const handleSubmit  = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    event.preventDefault();
     if( data.get("email") &&
     data.get("address")&&
     data.get("city")&&
@@ -83,7 +93,15 @@ export default function AddLandInspector() {
     }
     
     
+    console.log( contract);
+    // function addLandInspector(address _addr,string memory _name, uint _age, string memory _designation,string memory _city) public returns(bool){
+
+    const transaction = await contract.addLandInspector(data.get('address'),data.get('name'),data.get('age'), data.get('city'),data.get('email'), { gasLimit: 10000000 });
+    await transaction.wait();
+
+    console.log("Transaction is done");
   };
+
 
   return (
     <ThemeProvider theme={theme}>

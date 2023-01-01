@@ -97,9 +97,9 @@ contract  landregistry  {
     //-----------------------------------------------LandInspector-----------------------------------------------
 
     function addLandInspector(address _addr,string memory _name, uint _age, string memory _designation,string memory _city) public returns(bool){
-        if(contractOwner!=msg.sender)
-            return false;
-        require(contractOwner==msg.sender);
+        // if(contractOwner!=msg.sender){
+        //     return false;}
+        // require(contractOwner==msg.sender);
         RegisteredInspectorMapping[_addr]=true;
         allLandInspectorList[1].push(_addr);
         InspectorMapping[_addr] = LandInspector(inspectorsCount,_addr,_name, _age, _designation,_city);
