@@ -15,17 +15,110 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { orange } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-
-const theme = createTheme();
-const ColorButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(orange[500]),
-  backgroundColor: orange[500],
-  "&:hover": {
-    backgroundColor: orange[700],
-  },
-}));
+import abi from '../contract/landregistry.json'
+import { ethers } from "ethers";
+import {useState,useEffect} from 'react'
+import { useDispatch } from "react-redux";
+import { SatelliteAlt } from "@mui/icons-material";
 
 export default function Login() {
+  // ADMIN_CONTRACT
+  let dispatch=useDispatch()
+
+  const [state,setState]=useState({
+    provider:null,
+    signer:null,
+    contract:null
+  })
+  const[account,setaccount]=useState('')
+    const connectWallect=async ()=>{
+      const contractAddress="0xe269268eb73821bEACaBFBB5D5eF40051ed77a1C"
+      const contractAbi=abi.abi
+  
+      try {
+        const {ethereum} =window
+        if(ethereum)
+        {
+          const account=await ethereum.request({
+            method:"eth_requestAccounts",
+          })
+          setaccount(account)
+        }
+        const provider=new ethers.providers.Web3Provider(ethereum)
+        const signer=provider.getSigner()
+        // const provider1 = new ethers.providers.Web3Provider(web3.currentProvider);
+        //  const signer1 = provider1.getSigner();
+        // const address = await signer1.getAddress();
+      
+        //  console.log(address)
+        const contract=new ethers.Contract(contractAddress,contractAbi,signer)
+        console.log("con",contract)
+        setState({provider:provider,signer:signer,contract:contract})
+        dispatch({
+          type: "ADMIN_CONTRACT",
+          payload:{
+            contract:contract,
+            signer:signer,
+            provider:provider
+          }
+          
+        });
+      } catch (error) {
+        console.log(error)
+      }
+
+    }
+    let a=state.contract
+
+console.warn(a)
+ 
+    console.log(state)
+      const handleSubmit = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const privateKey=data.get('key')
+    
+        // Check if MetaMask is available
+        if (window.ethereum) {
+          try {
+            // Request the user's permission to access their accounts
+            const accounts = await window.ethereum.enable();
+    
+            // Create a new provider instance
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+    
+            // Create a new wallet instance from the private key
+            const wallet = ethers.Wallet.fromPrivateKey(privateKey);
+    
+            // Connect the wallet to the provider
+            const connectedWallet = wallet.connect(provider);
+    
+            // You can now use the connectedWallet instance to sign transactions and interact with the Ethereum network using MetaMask
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          console.error('MetaMask is not available');
+        }
+      };
+    
+        
+           
+
+            
+    
+   const [memos,setMemos]=useState([])
+    const {contract}=state
+    useEffect(()=>{
+        const memosMessage=async()=>{
+            const memos=await contract.ReturnAllLandList()
+            setMemos(memos)
+        }
+        contract &&memosMessage()
+    },[contract])
+            
+            console.log("jel", memos)
+
   const navigate = useNavigate();
   const login = () => {
     localStorage.setItem("Adminlogin", true);
@@ -33,25 +126,23 @@ export default function Login() {
     navigate("/dashboard");
   };
   
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
 
     
 
-    if(data.get('key')=="Mohsin")
+    if(account=='0xa91ad5bc6487900b5d5ba28eac7d4bd40db06e76')
     {
       login()
     }
 
-  else{
+  // else{
     
 
-  }}
+  // }}
 
-  
 
-  const [values, setValues] = React.useState({
+  const [values, setValues] = useState({
     password: "",
     showPassword: false,
   });
@@ -147,6 +238,7 @@ export default function Login() {
               fullWidth
               variant="contained"
               sx={{ mb: 2, height: "50px" }}
+              onClick={connectWallect}
             >
               MetaMask
             </ColorButton>
@@ -157,3 +249,13 @@ export default function Login() {
     </ThemeProvider>
   );
 }
+
+
+const theme = createTheme();
+const ColorButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(orange[500]),
+  backgroundColor: orange[500],
+  "&:hover": {
+    backgroundColor: orange[700],
+  },
+}));
