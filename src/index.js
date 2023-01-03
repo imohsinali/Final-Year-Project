@@ -4,16 +4,22 @@ import './index.css';
 import App from './App';
 
 // console.log(StateProvider);
-import store  from './StateMangement/store';
+import store,{persistedStore}  from './StateMangement/store';
+import { PersistGate } from 'redux-persist/es/integration/react';
 import { Provider } from 'react-redux';
-store.subscribe(()=>console.log(store.getState()))
-
+import {TransactionsProvider} from './StateMangement/Admin'
+// store.subscribe(()=>console.log(store.getState()))
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-    <App />
+    {/* <Provider store={store}> */}
+      {/* <PersistGate persistor={persistedStore}> */}
+      <TransactionsProvider> 
 
-    </Provider>
+      {/* </PersistGate> */}
+      <App/>
+      </TransactionsProvider>
+
+   {/* </Provider> */}
   
   </React.StrictMode>,
   document.getElementById('root')
