@@ -9,39 +9,35 @@ import Container from "@mui/material/Container";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useDispatch,useSelector } from "react-redux";
-import { ethers } from "ethers"
-
+import { TransactionContext } from "../StateMangement/Admin"
+import { useContext } from "react";
 
 const theme = createTheme();
 
 export default function AddLandInspector() {
-const {contract}    =  useSelector((state)=>state.adminData.adminState)
 
-  // ADMIN_CONTRACT
+  const { contract } = useContext(TransactionContext);
 
   
 
-console.log("he",contract)
 
-  let toastId = null;
-  let dispatch=    useDispatch()
+  // let toastId = null;
   
-  function notify(fname,cname) {
-    if (!toast.isActive(toastId)) {
-      console.log("Displaying Toast");
-      toastId = toast(fname, {
-        closeOnClick: true,
-        toastId: "my_toast",
-        autoClose: true,
-        closeButton: false,
-        position: toast.POSITION.BOTTOM_RIGHT,
-        className:cname
-      });
-    } else {
-      console.log("Toast already active");
-    }
-  }
+  // function notify(fname,cname) {
+  //   if (!toast.isActive(toastId)) {
+  //     console.log("Displaying Toast");
+  //     toastId = toast(fname, {
+  //       closeOnClick: true,
+  //       toastId: "my_toast",
+  //       autoClose: true,
+  //       closeButton: false,
+  //       position: toast.POSITION.BOTTOM_RIGHT,
+  //       className:cname
+  //     });
+  //   } else {
+  //     console.log("Toast already active");
+  //   }
+  // }
 
   const handleSubmit  = async (event) => {
     event.preventDefault();
@@ -54,52 +50,44 @@ console.log("he",contract)
      data.get("name")&&
      data.get("age")&&
      data.get('cnic'))
-    {
-
-      
-        dispatch({
-          type: "ADD",
-          item:{  
-              id:1,
-          "Inspector Address": data.get('address'),
-            name: data.get('name'),
-            age: data.get('age'),
-            cnic: data.get('cnic'),
-            city: data.get('city'),
-          },
-        });
-        let fname="Form Submit Successfully!"
-      let cname="toast-success-container"
-      
-        notify(fname, cname)
-      
-      
-      console.log({
-        email: data.get("email"),
-        address: data.get("address"),
-        city:data.get("city"),
-        name:data.get("name"),
-        age:data.get("age"),
-        cnic:data.get('cnic')
-     
-  
-      });
-    }
-    else{
-       
-      let fname="Form is not Complete!"
-      let cname="toast-danger-container"
-      notify(fname, cname)
-    }
-    
-    
-    console.log( contract);
-    // function addLandInspector(address _addr,string memory _name, uint _age, string memory _designation,string memory _city) public returns(bool){
-
-    const transaction = await contract.addLandInspector(data.get('address'),data.get('name'),data.get('age'), data.get('city'),data.get('email'), { gasLimit: 10000000 });
+    {const transaction = await contract.addLandInspector(data.get('address'),data.get('name'),data.get('age'), data.get('city'),data.get('email'), { gasLimit: 10000000 });
     await transaction.wait();
 
     console.log("Transaction is done");
+
+    }
+      
+     
+    //     // let fname="Form Submit Successfully!"
+    //   // let cname="toast-success-container"
+      
+    //     // notify(fname, cname)
+      
+      
+    //   console.log({
+    //     email: data.get("email"),
+    //     address: data.get("address"),
+    //     city:data.get("city"),
+    //     name:data.get("name"),
+    //     age:data.get("age"),
+    //     cnic:data.get('cnic')
+     
+  
+    //   });
+    // }
+    // else{
+       
+    //   // let fname="Form is not Complete!"
+    //   // let cname="toast-danger-container"
+    //   // notify(fname, cname)
+    // }
+    
+    
+
+    // const transaction = await contract.addLandInspector(data.get('address'),data.get('name'),data.get('age'), data.get('city'),data.get('email'), { gasLimit: 10000000 });
+    // await transaction.wait();
+
+    // console.log(transaction);
   };
 
 
