@@ -1,32 +1,47 @@
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
+import { useState ,useEffect} from "react";
+import { TransactionContext } from "../StateMangement/Admin"
+import data from "../Data/adminData";
+import { useContext } from "react";
+import { filter } from "@chakra-ui/react";
+  // const [data,setData]=useState([])
 export default function AllLandInspector() {
-  const {basket} = useSelector((state) => state.adminData);
-  console.log(basket)
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(10);
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = basket.slice(indexOfFirstPost, indexOfLastPost);
+  const {  contract } = useContext(TransactionContext); 
+  const [allInspector, setMemos] = useState([]);
 
-  // Change page
-  const dispatch=useDispatch()
+  useEffect(() => {
+    const viewInspector = async () => {
+      const inspector = await contract.ReturnAllLandIncpectorList();
+      const structuredTransactions = inspector.map((transaction) => ({
+        _addr:transaction._addr,
+        name: transaction.name,
+        age: parseInt(transaction.age._hex),
+        city: transaction.city,
+      }));
+      setMemos(structuredTransactions);
+    };
+    contract && viewInspector();
+  }, [contract])
   const handleChange = (event, value) => {
     setCurrentPage(value);
   
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(10);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = allInspector.slice(indexOfFirstPost, indexOfLastPost);
 
-  const remove = (id) => {
-    dispatch({ type: "REMOVE", id: id });
-    // const filteredPeople = data2.filter((item) => item.id !== id);
+  const remove =async (id) => {
+    // const filteredPeople = data.filter((item) => item.id !== id);
+console.log(id)
+const transaction = await contract.removeLandInspector(id, { gasLimit: 10000000 });
+    await transaction.wait();
 
-    // setPosts(filteredPeople)
+    console.log("done");
   };
 
-  // const totalPage = Math.ceil(data2.length / 10);
   return (
     <div className="table">
       <table>
@@ -43,12 +58,12 @@ export default function AllLandInspector() {
         {currentPosts.map((data,index)=>{
           return (
             <tbody >
-             <tr key={data.id} className="table-data" > 
+             <tr key={data._addr} className="table-data" > 
               <td>
                 {index}
               </td>
               <td>
-                {data['Inspector Address']}
+                {data._addr}
               </td>
               <td>
                 {data.city}
@@ -57,7 +72,7 @@ export default function AllLandInspector() {
                 {data.name}
               </td>
               <td>
-              <button onClick={()=>remove(data.id)}  className='btn remove-button'>remove</button>
+              <button onClick={()=>remove(data._addr)}  className='btn remove-button'>remove</button>
                 
               </td>
             </tr> 
