@@ -15,43 +15,54 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { orange } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
-const theme = createTheme();
-const ColorButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(orange[500]),
-  backgroundColor: orange[500],
-  "&:hover": {
-    backgroundColor: orange[700],
-  },
-}));
+import { TransactionContext } from "../StateMangement/Admin";
+
+import { useContext,useEffect,useState } from "react";
+
+  
 
 export default function Login() {
-  const {isRegistered}= useSelector((state) => state.userReducer);
-  console.warn("hello", isRegistered)
+  const { connectWallet, currentAccount, transactions,contract } =
+    useContext(TransactionContext);
+    const [registered,setRegistered]=useState(false)
+  // const {isRegistered}= useSelector((state) => state.userReducer);
+    
+
+  useEffect(() => {
+    const viewInspector = async () => {
+      const resgisterduser = await contract.isUserRegistered(currentAccount);
+      setRegistered(resgisterduser);
+    };
+    contract && viewInspector();
+  }, [contract])
+  console.log(currentAccount,registered)
   const navigate = useNavigate();
   const login = () => {
-    localStorage.setItem("login", true);
+    localStorage.setItem("Userlogin", true);
     navigate('/profile')
     
   };
   
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+  const handleSubmit = () => {
+    // event.preventDefault();
+    // const data = new FormData(event.currentTarget);
 
     
 
-    if(data.get('key')=="Mohsin" && !isRegistered)
+    if(currentAccount && !registered)
     {
      console.warn("i am in not")
       navigate("/registration");
 
     }
-    if(data.get('key')=="Mohsin"&& isRegistered)
+    if(currentAccount&&registered)
     {
       console.warn(' iam in login')
+      // window.location.reload();
+
       login()
+
     }
 
   else{
@@ -157,6 +168,7 @@ export default function Login() {
               fullWidth
               variant="contained"
               sx={{ mb: 2, height: "50px" }}
+              onClick={()=>{connectWallet(); handleSubmit() }}
             >
               MetaMask
             </ColorButton>
@@ -167,3 +179,13 @@ export default function Login() {
     </ThemeProvider>
   );
 }
+
+
+const theme = createTheme();
+const ColorButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(orange[500]),
+  backgroundColor: orange[500],
+  "&:hover": {
+    backgroundColor: orange[700],
+  },
+}));

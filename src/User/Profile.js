@@ -3,11 +3,34 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
-import { useSelector } from "react-redux";
-
+import { useState ,useEffect} from "react";
+import { TransactionContext } from "../StateMangement/Admin"
+import { useContext } from "react";
+  
 export default function Profile() {
-        const userProfile    =  useSelector((state)=>state.userReducer.userProfile)
-        const isVerifed    =  useSelector((state)=>state.userReducer.isVerified)
+  const {  contract,currentAccount } = useContext(TransactionContext); 
+  const [profile, setProfile] = useState([]);
+
+  useEffect(() => {
+    const viewProfile = async () => {
+      const user = await contract.UserMapping(currentAccount);
+      const structuredData = {
+          name: user.name,
+          age: parseInt(user.age._hex),
+          city: user.city,
+          cinc:user.cinc,
+          email:user.email,
+          isUserVerified:user.isUserVerified,
+          document:user.document,
+          address:user.id
+
+        }
+
+
+      setProfile(structuredData);
+    };
+    contract && viewProfile();
+  }, [contract])
 
   const gridSpacing = 2;
   return (
@@ -48,7 +71,7 @@ export default function Profile() {
                   className="user-image"
                 />
               </Paper>
-              <Typography sx={{color:isVerifed?'green':'red',ml:2 }}>Account:{isVerifed?"Verified":"Not Verified"}</Typography>
+              <Typography sx={{color:profile.isUserVerified?'green':'red',ml:2 }}>Account:{profile.isUserVerified?"Verified":"Not Verified"}</Typography>
             </Grid>
 
             <Grid item lg={6} md={12} sm={12} xs={12}>
@@ -66,7 +89,7 @@ export default function Profile() {
                       backgroundColor: "none",
                     }}
                   >
-                    <Typography>Wallet Address:{userProfile.walletAdress}</Typography>
+                    <Typography>Wallet Address:{profile.address}</Typography>
                   </Paper>
                 </Grid>
                 <Grid item sm={12} xs={12} md={6} lg={12}>
@@ -81,7 +104,7 @@ export default function Profile() {
                       backgroundColor: "none",
                     }}
                   >
-                    <Typography>Name:{userProfile.name} </Typography>
+                    <Typography>Name:{profile.name} </Typography>
                   </Paper>
                 </Grid>
                 <Grid item sm={12} xs={12} md={6} lg={12}>
@@ -96,7 +119,7 @@ export default function Profile() {
                       backgroundColor: "none",
                     }}
                   >
-                    <Typography>Age:{userProfile.age} </Typography>
+                    <Typography>Age:{profile.age} </Typography>
                   </Paper>
                 </Grid>
                 <Grid item sm={12} xs={12} md={6} lg={12}>
@@ -111,7 +134,7 @@ export default function Profile() {
                       backgroundColor: "none",
                     }}
                   >
-                    <Typography>CNIC: {userProfile.cnic}</Typography>
+                    <Typography>CNIC: {profile.cinc}</Typography>
                   </Paper>
                 </Grid>
                 <Grid item sm={12} xs={12} md={6} lg={12}>
@@ -126,7 +149,7 @@ export default function Profile() {
                       backgroundColor: "none",
                     }}
                   >
-                    <Typography>City:{userProfile.city}</Typography>
+                    <Typography>City:{}</Typography>
                   </Paper>
                 </Grid>
                 <Grid item sm={12} xs={12} md={6} lg={12}>
@@ -141,7 +164,7 @@ export default function Profile() {
                       backgroundColor: "none",
                     }}
                   >
-                    <Typography>Phone No:{userProfile.phone}</Typography>
+                    <Typography>Phone No:{}</Typography>
                   </Paper>
                 </Grid>
                 <Grid item sm={12} xs={12} md={6} lg={12}>
@@ -156,7 +179,7 @@ export default function Profile() {
                       backgroundColor: "none",
                     }}
                   >
-                    <Typography>Email:{userProfile.email}</Typography>
+                    <Typography>Email:{profile.email}</Typography>
                   </Paper>
                 </Grid>
                 <Grid item sm={12} xs={12} md={6} lg={12}>

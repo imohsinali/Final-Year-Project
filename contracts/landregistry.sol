@@ -32,7 +32,6 @@ contract  landregistry  {
         uint age;
         string city;
         string cinc;
-        string panNumber;
         string document;
         string email;
         bool isUserVerified;
@@ -80,14 +79,13 @@ contract  landregistry  {
     mapping(uint => uint[])  allLandList;
     mapping(uint => uint[])  paymentDoneList;
 
-
     function isContractOwner(address _addr) public view returns(bool){
         if(_addr==contractOwner)
             return true;
         else
             return false;
     }
-
+     
     function changeContractOwner(address _addr)public {
         require(msg.sender==contractOwner,"you are not contractOwner");
 
@@ -97,20 +95,20 @@ contract  landregistry  {
     //-----------------------------------------------LandInspector-----------------------------------------------
 
     function addLandInspector(address _addr,string memory _name, uint _age, string memory _designation,string memory _city) public returns(bool){
-        // if(contractOwner!=msg.sender){
-        //     return false;}
-        // require(contractOwner==msg.sender);
+        require(msg.sender==contractOwner,"You are not contractOwner");
+        require(RegisteredInspectorMapping[_addr] == false,"New address"); 
+
         RegisteredInspectorMapping[_addr]=true;
         allLandInspectorList[1].push(_addr);
         InspectorMapping[_addr] = LandInspector(inspectorsCount,_addr,_name, _age, _designation,_city);
         return true;
     }
-
-    function ReturnAllLandIncpectorList() public view returns(address[] memory)
+      function ReturnAllLandIncpectorList() public view returns(address[] memory)
     {
         return allLandInspectorList[1];
     }
 
+  
     function removeLandInspector(address _addr) public{
         require(msg.sender==contractOwner,"You are not contractOwner");
         require(RegisteredInspectorMapping[_addr],"Land Inspector not found");
@@ -128,6 +126,8 @@ contract  landregistry  {
             }
         }
     }
+ 
+
 
     function isLandInspector(address _id) public view returns (bool) {
         if(RegisteredInspectorMapping[_id]){
@@ -150,17 +150,22 @@ contract  landregistry  {
         }
     }
 
-    function registerUser(string memory _name, uint _age, string memory _city,string memory _cinc, string memory _panNumber, string memory _document, string memory _email
+    function registerUser(string memory _name, uint _age, string memory _city,string memory _cinc, string memory _document, string memory _email
     ) public {
-
-        require(!RegisteredUserMapping[msg.sender]);
+         if (RegisteredUserMapping[msg.sender] == true) {
+        // The user is already registered.
+        return;
+    }
+    else{
+        // require(!RegisteredUserMapping[msg.sender]);
 
         RegisteredUserMapping[msg.sender] = true;
         userCount++;
         allUsersList[1].push(msg.sender);
         AllUsers[userCount]=msg.sender;
-        UserMapping[msg.sender] = User(msg.sender, _name, _age, _city,_cinc,_panNumber, _document,_email,false);
+        UserMapping[msg.sender] = User(msg.sender, _name, _age, _city,_cinc, _document,_email,false);
         //emit Registration(msg.sender);
+        }
     }
 
     function verifyUser(address _userId) public{
@@ -177,7 +182,7 @@ contract  landregistry  {
 
 
     function addLand(uint _area, string memory _address, uint landPrice,string memory _allLatiLongi, uint _propertyPID,string memory _surveyNum, string memory _document) public {
-        require(isUserVerified(msg.sender));
+        require(isUserVerified(payable(msg.sender)));
         landsCount++;
         lands[landsCount] = Landreg(landsCount, _area, _address, landPrice,_allLatiLongi,_propertyPID, _surveyNum , _document,false,payable(msg.sender),false);
         MyLands[msg.sender].push(landsCount);
