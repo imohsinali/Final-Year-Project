@@ -30,7 +30,7 @@ import UAddLand from "./User/AddLand";
 import Profile from "./User/Profile";
 const Home = () => {
   
-const [path,setPath]=useState({Inspector:false,Admin:true,User:false})
+const [path,setPath]=useState({Inspector:true,Admin:true,User:true})
    
 console.warn(path)
   return (
@@ -43,7 +43,7 @@ console.warn(path)
       <ul>
 
       <li>
-        <Link to={'login'} onClick={()=>setPath({Inspector:true,Admin:false,User:false})}   style={{ textDecoration: 'none' }} >
+        <Link to={'Inspectorlogin'} onClick={()=>setPath({Inspector:true,Admin:false,User:false})}   style={{ textDecoration: 'none' }} >
             <Button >Inspector</Button>
           </Link>
         </li>
@@ -53,7 +53,7 @@ console.warn(path)
           </Link>
         </li>
         <li>
-          <Link to={"login"} onClick={()=>setPath({Inspector:false,Admin:false,User:true})} style={{ textDecoration: 'none' }}>
+          <Link to={"Userlogin"} onClick={()=>setPath({Inspector:false,Admin:false,User:true})} style={{ textDecoration: 'none' }}>
             <Button >User</Button>
           </Link>
         </li>
@@ -68,14 +68,14 @@ console.warn(path)
         <img src={admin}/>
         <h3>Admin</h3>
         </div> </Link>
-        <Link to={'login'} onClick={()=>setPath({Inspector:false,Admin:true,User:false})}   style={{ textDecoration: 'none' }} >
+        <Link to={'Inspectorlogin'} onClick={()=>setPath({Inspector:false,Admin:true,User:false})}   style={{ textDecoration: 'none' }} >
      
         <div>
           <img src={inspector}/>
           <h3>Inspector</h3>
         </div>
         </Link>
-        <Link to={"login"} onClick={()=>setPath({Inspector:false,Admin:false,User:true})} style={{ textDecoration: 'none' }}>
+        <Link to={"Userlogin"} onClick={()=>setPath({Inspector:false,Admin:false,User:true})} style={{ textDecoration: 'none' }}>
 
         <div><img src={User}/>
         <h3>User</h3>
@@ -87,7 +87,7 @@ console.warn(path)
     
 </Route>
   
-    { path.Inspector&& <Route path="login" element={<Inspector/>}/>}
+    { path.Inspector&& <Route path="Inspectorlogin" element={<Inspector/>}/>}
          <Route path="Inspector-dashboard"  
          element={<IProtected Component={IDashboard} />}
          />
@@ -117,7 +117,7 @@ console.warn(path)
       }
 
       {
-        path.User && <Route path="login" element={<ULogin/>} />
+        path.User && <Route path="Userlogin" element={<ULogin/>} />
       }
 
 
