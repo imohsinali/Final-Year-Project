@@ -9,16 +9,23 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { TransactionContext } from "../StateMangement/Admin";
 
+import { useContext,useEffect,useState } from "react";
 const theme = createTheme();
 
+
+  
+
+  
 export default function Registration() {
+  const { connectWallet, currentAccount, transactions,contract } =
+    useContext(TransactionContext);
  let naviagte= useNavigate()
-console.warn('i am in cons')
-let dispatch=useDispatch()
-const handleSubmit = (event) => {
+console.warn("reg",currentAccount)
+
+const handleSubmit =async (event) => {
 
 event.preventDefault();
 const data = new FormData(event.currentTarget);
@@ -31,25 +38,16 @@ data.get("address")&&
  data.get('city')&&
  data.get('doc'))
 {
+  // function registerUser(string memory _name, uint _age, string memory _city,string memory _cinc, string memory _document, string memory _email
 
-  
-    dispatch({
-      type: "SET_OPTION",
-      payload:{
-        name:data.get('name'),
-        cnic:data.get("cnic"),
-        age:data.get("age"),
-        address:data.get("address"),
-        email:data.get("email"),
-        city:data.get('city'),
-        phone:data.get('phone'),
-        doc:data.get('doc'),
-        walletAdress:"0x121218192aasuwieui12"
-      }
-      
-    });
+  // const transaction = await contract.registerUser(data.get('name'),data.get('age'),data.get('city'), data.get('cinc'),"doc",data.get('email'), { gasLimit: 10000000 });
+  const transaction = await contract.registerUser("mohsin",22,'skd', 'hello',"doc",'email', { gasLimit: 1000000 });
+
+    await transaction.wait();
+
+    console.log("Transaction is done");
+    
     naviagte('/login')
-    // naviagte('/profile')
 
   }}
 
