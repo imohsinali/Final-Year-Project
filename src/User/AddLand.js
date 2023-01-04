@@ -9,14 +9,12 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useDispatch, useSelector } from "react-redux";
 
 const theme = createTheme();
 
 export default function AddLand() {
   let toastId = null;
-  let dispatch=    useDispatch()
-  const isVerifed    =  useSelector((state)=>state.userReducer.isVerified)
+  const isVerifed=false;
 
   function notify(fname,cname) {
     if (!toast.isActive(toastId)) {
@@ -45,33 +43,12 @@ export default function AddLand() {
      data.get("landArea")&&
      data.get('price'))
     {
-        dispatch({
-          type: "ADD",
-          item:{  
-              id:1,
-      
-            name: data.get('name'),
-            age: data.get('age'),
-            cnic: data.get('identificationcard'),
-            city: data.get('district'),
-            price:data.get('price'),
-            landarea:data.get('landArea')
-
-          },
-        });
+        
         let fname="Form Submit Successfully!"
       let cname="toast-success-container"
       
         notify(fname, cname)
       
-      
-      // console.log({
-      //   email: data.get("email"),
-      //   address: data.get("address"),
-      //   city:data.get("city"),
-      //   name:data.get("name"),
-      //   age:data.get("age"),
-      //   cnic:data.get('cnic')
      
   
       
