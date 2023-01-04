@@ -5,7 +5,7 @@ import contractABI from "../contract/landregistry.json";
 export const TransactionContext = React.createContext();
 
 const { ethereum } = window;
-const contractAddress="0xBaA0A7E9b4E4CAB42b2d14665957eE555C0f9267"
+const contractAddress="0x0C84632F86C08850Db4BbFC2b2C0f4AddB19EB79"
 const createEthereumContract = () => {
   const provider = new ethers.providers.Web3Provider(ethereum);
   const signer = provider.getSigner();
@@ -53,21 +53,20 @@ export const TransactionsProvider = ({ children }) => {
       if (ethereum) {
         const transactionsContract = createEthereumContract();
 
-        const availableTransactions = await transactionsContract.ReturnAllLandIncpectorList();
+        const availableTransactions = await transactionsContract.ReturnAllLandIncpectorList()
+         console.log(availableTransactions)
+        // const structuredTransactions = availableTransactions.map((transaction) => ({
+        //   name: transaction.name,
+        //   age: parseInt(transaction.age._hex),
+        //   // timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
+        //   city: transaction.city,
+        //   // keyword: transaction.keyword,
+        //   // amount: parseInt(transaction.amount._hex) / (10 ** 18)
+        // }));
 
-        const structuredTransactions = availableTransactions.map((transaction) => ({
-          name: transaction.name,
-          age: parseInt(transaction.age._hex),
-          // timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
-          city: transaction.city,
-          // keyword: transaction.keyword,
-          // amount: parseInt(transaction.amount._hex) / (10 ** 18)
-        }));
+        // console.log(structuredTransactions);
 
-        console.log(structuredTransactions);
-
-        setTransactions(structuredTransactions);
-        window.localStorage.setItem("transaction", JSON.stringify(structuredTransactions));
+        // setTransactions(structuredTransactions);
 
       } else {
         console.log("Ethereum is not present");
@@ -94,14 +93,14 @@ export const TransactionsProvider = ({ children }) => {
        setContract(transactionsContract)
        console.log("hello", transactionsContract)
 
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.log(error);
 
       throw new Error("No ethereum object");
     }
   };
-
+  // console.log(checkIfWalletIsConnect())
 
 
   useEffect(() => {
@@ -113,6 +112,7 @@ export const TransactionsProvider = ({ children }) => {
     <TransactionContext.Provider
       value={{
         connectWallet,
+        checkIfWalletIsConnect,
         currentAccount,
         transactions,
         contract
