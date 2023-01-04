@@ -4,7 +4,7 @@ import Layout from "./Layout";
 const Protected = ({ Component }) => {
   const navigate = useNavigate();
   useEffect(() => {
-    let login = localStorage.getItem("login");
+    let login = localStorage.getItem("Userlogin");
     if (!login) {
       navigate("login");
     }
