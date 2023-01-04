@@ -2,27 +2,30 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useState ,useEffect} from "react";
 import { TransactionContext } from "../StateMangement/Admin"
-import data from "../Data/adminData";
 import { useContext } from "react";
-import { filter } from "@chakra-ui/react";
-  // const [data,setData]=useState([])
 export default function AllLandInspector() {
   const {  contract } = useContext(TransactionContext); 
-  const [allInspector, setMemos] = useState([]);
+  const [inspectors, setInspectors] = useState([]);
+
+
 
   useEffect(() => {
     const viewInspector = async () => {
-      const inspector = await contract.ReturnAllLandIncpectorList();
-      const structuredTransactions = inspector.map((transaction) => ({
-        _addr:transaction._addr,
-        name: transaction.name,
-        age: parseInt(transaction.age._hex),
-        city: transaction.city,
-      }));
-      setMemos(structuredTransactions);
+      const inspectorAddresses = await contract.ReturnAllLandIncpectorList();
+      const inpsectors = await Promise.all(
+        inspectorAddresses.map(async (address) => {
+          const {name,city,age,designation} = await contract.InspectorMapping(address)
+          return { address, name,city,age:parseInt(age._hex),designation
+          };
+        })
+      );
+
+      setInspectors(inpsectors);
     };
     contract && viewInspector();
-  }, [contract])
+  }, [])
+
+
   const handleChange = (event, value) => {
     setCurrentPage(value);
   
@@ -31,11 +34,8 @@ export default function AllLandInspector() {
   const [postsPerPage] = useState(10);
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = allInspector.slice(indexOfFirstPost, indexOfLastPost);
-
+  const currentPosts = inspectors.slice(indexOfFirstPost, indexOfLastPost);
   const remove =async (id) => {
-    // const filteredPeople = data.filter((item) => item.id !== id);
-console.log(id)
 const transaction = await contract.removeLandInspector(id, { gasLimit: 10000000 });
     await transaction.wait();
 
@@ -58,21 +58,25 @@ const transaction = await contract.removeLandInspector(id, { gasLimit: 10000000 
         {currentPosts.map((data,index)=>{
           return (
             <tbody >
-             <tr key={data._addr} className="table-data" > 
+             <tr key={index} className="table-data" > 
               <td>
-                {index}
+                {
+                 index
+                }
               </td>
               <td>
-                {data._addr}
+                {data.address}
               </td>
               <td>
-                {data.city}
+              {data.name}
+
               </td>
               <td>
-                {data.name}
+              {data.city}
+
               </td>
               <td>
-              <button onClick={()=>remove(data._addr)}  className='btn remove-button'>remove</button>
+              <button onClick={()=>remove(data.address)}  className='btn remove-button'>remove</button>
                 
               </td>
             </tr> 
