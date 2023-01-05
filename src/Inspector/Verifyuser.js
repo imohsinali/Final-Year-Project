@@ -1,46 +1,54 @@
-import { DataTable } from "mantine-datatable";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState,useEffect,useContext } from "react";
+import { TransactionContext } from "../StateMangement/Admin"
+import data from './data'
 
 export default function VerifyUser() {
-  const dispatch=useDispatch()
-
-  const data = useSelector((state) => state.userReducer.userProfile);
-  const verified = useSelector((state) => state.userReducer.isVerified);
-
-console.warn(verified)
-  const data2=[data]
+  const {  contract } = useContext(TransactionContext); 
+  const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = data2.slice(indexOfFirstPost, indexOfLastPost);
-
-  // Change page
+  const currentPosts = users.slice(indexOfFirstPost, indexOfLastPost);
+  
+    
+  
+  
+  
+    useEffect(() => {
+      const viewAllUser = async () => {
+        const userAddresses = await contract.ReturnAllUserList();
+        const users = await Promise.all(
+          userAddresses.map(async (address) => {
+            const {name,city,age,isUserVerified,cinc} = await contract.UserMapping(address)
+            return { address, name,city,age:parseInt(age._hex),isUserVerified,cinc
+            };
+          })
+        );
+  
+        setUsers(users);
+      };
+      contract && viewAllUser();
+    }, [])
+    console.log(users)
+  
   const handleChange = (event, value) => {
     setCurrentPage(value);
   
   };
+  const verify  = async (address) => {
 
-  const remove = (id) => {
-    dispatch({ type: "REMOVE", id: id });
-    // const filteredPeople = data2.filter((item) => item.id !== id);
+    console.log(address)
+    const transaction = await contract.verifyUser(address, { gasLimit: 1000000 });
+    await transaction.wait();
 
-    // setPosts(filteredPeople)
-  };
+    console.log("Transaction is done");
 
-  const verify=()=>{
-    dispatch(
-      {
-        type:"Verify"
+    }
+  
 
-      }
-    )
-  }
-
-  // const totalPage = Math.ceil(data2.length / 10);
   return (
     <div className="table">
       <table>
@@ -49,7 +57,7 @@ console.warn(verified)
           <th>#</th>
           <th>Owner address</th>
           <th>Cnic</th>
-          <th>Area</th>
+          <th>Name</th>
           <th>Documents</th>
           <th>Verify</th>
 
@@ -64,19 +72,28 @@ console.warn(verified)
                 {index}
               </td>
               <td>
-                {data.walletAdress}
-              </td>
-              <td>
-                {data.cnic}
-              </td>
-              <td>
                 {data.address}
               </td>
               <td>
-                <input type={'file'}/>
+                {data.cinc}
               </td>
               <td>
-              <button onClick={verify}   className={verified? "sucess-btn btn":'btn verify-button'}>{verified?'Verified':"verify"} </button>
+                {data.name}
+              </td>
+              <td>
+                {data.document}
+              </td>
+              <td>
+                 {
+                  data.isUserVerified?
+                  (<button disabled  className={"sucess-btn btn"}>Verified </button>):
+                  (
+                    <button  onClick={()=>verify(data.address)} className={'btn verify-button'}>verify </button>
+
+                  )
+
+                 } 
+          
                 
               </td>
             </tr> 

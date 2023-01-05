@@ -5,7 +5,6 @@ import Protected from "./Protected";
 import Verifyland from './Verifyland'
 import Verifyuser from './Verifyuser'
 
-import Home from "../Home";
 import TransferOwnership from "./TransferOwnership";
 
 function Inspector() {

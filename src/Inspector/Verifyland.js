@@ -1,12 +1,8 @@
-import { DataTable } from "mantine-datatable";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
+import data2 from './data2'
 export default function Verifyland() {
-  const data2 = useSelector((state) => state.adminData.basket);
-  console.log(data2)
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
   const indexOfLastPost = currentPage * postsPerPage;
@@ -14,14 +10,14 @@ export default function Verifyland() {
   const currentPosts = data2.slice(indexOfFirstPost, indexOfLastPost);
 
   // Change page
-  const dispatch=useDispatch()
+  // const dispatch=useDispatch()
   const handleChange = (event, value) => {
     setCurrentPage(value);
   
   };
 
   const remove = (id) => {
-    dispatch({ type: "REMOVE", id: id });
+    // dispatch({ type: "REMOVE", id: id });
     // const filteredPeople = data2.filter((item) => item.id !== id);
 
     // setPosts(filteredPeople)

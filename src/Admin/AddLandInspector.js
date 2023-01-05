@@ -50,7 +50,7 @@ export default function AddLandInspector() {
      data.get("name")&&
      data.get("age")&&
      data.get('cnic'))
-    {const transaction = await contract.addLandInspector(data.get('address'),data.get('name'),data.get('age'), data.get('city'),data.get('email'), { gasLimit: 10000000 });
+    {const transaction = await contract.addLandInspector(data.get('address'),data.get('name'),data.get('age'), data.get('city'),data.get('email'), { gasLimit: 1000000 });
     await transaction.wait();
 
     console.log("Transaction is done");

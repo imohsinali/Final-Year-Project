@@ -16,16 +16,27 @@ import { orange } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
-const theme = createTheme();
-const ColorButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(orange[500]),
-  backgroundColor: orange[500],
-  "&:hover": {
-    backgroundColor: orange[700],
-  },
-}));
 
+// isLandInspector
+import { TransactionContext } from "../StateMangement/Admin";
+
+import { useContext,useEffect,useState } from "react";
+import { ethers } from 'ethers';
+
+
+  
 export default function Login() {
+  const { connectWallet, currentAccount, transactions,contract } =
+    useContext(TransactionContext);
+    const [registered,setRegistered]=useState(false)
+  useEffect(() => {
+    const viewInspector = async () => {
+      const resgisterduser = await contract.isLandInspector(currentAccount);
+      setRegistered(resgisterduser);
+    };
+    contract && viewInspector();
+  }, [contract])
+
   const navigate = useNavigate();
   const login = () => {
     localStorage.setItem("Inspectorlogin", true);
@@ -38,10 +49,11 @@ export default function Login() {
     const data = new FormData(event.currentTarget);
 
     
-
-    if(data.get('key')=="Mohsin")
+console.log(registered)
+    if(registered)
     {
       login()
+      console.log("resg")
     }
 
   else{
@@ -147,6 +159,7 @@ export default function Login() {
               fullWidth
               variant="contained"
               sx={{ mb: 2, height: "50px" }}
+              onClick={connectWallet}
             >
               MetaMask
             </ColorButton>
@@ -157,3 +170,13 @@ export default function Login() {
     </ThemeProvider>
   );
 }
+
+
+const theme = createTheme();
+const ColorButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(orange[500]),
+  backgroundColor: orange[500],
+  "&:hover": {
+    backgroundColor: orange[700],
+  },
+}));

@@ -89,7 +89,8 @@ export default function Profile() {
                       backgroundColor: "none",
                     }}
                   >
-                    <Typography>Wallet Address:{profile.address}</Typography>
+                    <Typography>Wallet Address:</Typography>
+                    {profile.address}
                   </Paper>
                 </Grid>
                 <Grid item sm={12} xs={12} md={6} lg={12}>
