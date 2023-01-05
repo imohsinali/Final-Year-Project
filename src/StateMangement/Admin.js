@@ -21,6 +21,8 @@ export const TransactionsProvider = ({ children }) => {
   const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"));
   const [transactions, setTransactions] = useState(localStorage.getItem('transaction'));
   const [contract,setContract]=useState()
+  const [provider,setProvider]=useState()
+
 
   const handleChange = (e, name) => {
     setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
@@ -36,6 +38,8 @@ export const TransactionsProvider = ({ children }) => {
       const signer = provider.getSigner();
        const transactionsContract = new ethers.Contract(contractAddress, contractABI.abi, signer);
        setContract(transactionsContract)
+       setProvider(provider)
+       console.log("hello 2", provider)
        console.log("hello", transactionsContract)
 
       if (accounts.length) {
@@ -91,7 +95,7 @@ export const TransactionsProvider = ({ children }) => {
       const signer = provider.getSigner();
        const transactionsContract = new ethers.Contract(contractAddress, contractABI.abi, signer);
        setContract(transactionsContract)
-       console.log("hello", transactionsContract)
+
 
       // window.location.reload();
     } catch (error) {
@@ -115,7 +119,8 @@ export const TransactionsProvider = ({ children }) => {
         checkIfWalletIsConnect,
         currentAccount,
         transactions,
-        contract
+        contract,
+        provider
       }}
     >
       {children}
