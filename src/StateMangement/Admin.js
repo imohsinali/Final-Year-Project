@@ -15,16 +15,14 @@ const createEthereumContract = () => {
 };
 
 export const TransactionsProvider = ({ children }) => {
-  const [formData, setformData] = useState({ addressTo: "", amount: "", keyword: "", message: "" });
+  // const [formData, setformData] = useState({ addressTo: "", amount: "", keyword: "", message: "" });
   const [currentAccount, setCurrentAccount] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"));
-  const [transactions, setTransactions] = useState(localStorage.getItem('transaction'));
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"));
+  // const [transactions, setTransactions] = useState(localStorage.getItem('transaction'));
   const [contract,setContract]=useState()
 
-  const handleChange = (e, name) => {
-    setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
-  };
+  
 
  
   const checkIfWalletIsConnect = async () => {
@@ -106,7 +104,7 @@ export const TransactionsProvider = ({ children }) => {
   useEffect(() => {
     checkIfWalletIsConnect();
     getAllTransactions()
-  }, [createEthereumContract]);
+  }, []);
 
   return (
     <TransactionContext.Provider
@@ -114,7 +112,6 @@ export const TransactionsProvider = ({ children }) => {
         connectWallet,
         checkIfWalletIsConnect,
         currentAccount,
-        transactions,
         contract
       }}
     >

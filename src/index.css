@@ -132,7 +132,7 @@ section > div {
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   padding: 20px;
-  position: sticky;
+  position: static;
   top: 0;
 }
 
@@ -212,9 +212,7 @@ ul{
   opacity: 1;
 }
 
-.home{
-  /* display: none; */
-}
+
 
 table {
   font-family: arial, sans-serif;
@@ -313,5 +311,6 @@ tr:nth-child(even) {
 
 .sucess-btn{
   background-color: #34A853;
+  
   opacity: 1;
 }

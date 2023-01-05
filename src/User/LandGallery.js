@@ -5,11 +5,8 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Title from "./Title";
 import landList from "./landDetailList";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-function preventDefault(event) {
-  event.preventDefault();
-}
 
 export default function LandGallery() {
   let { pathname } = useLocation();

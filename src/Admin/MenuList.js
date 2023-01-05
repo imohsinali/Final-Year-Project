@@ -9,9 +9,9 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
 import People from "@mui/icons-material/People";
-const logout = () => {
-  localStorage.clear();
-};
+// const logout = () => {
+//   localStorage.clear();
+// };
 const list = [
   {
     id: 0,
@@ -59,7 +59,7 @@ const Menu = ({ open }) => {
           >
             <ListItem
               key={id}
-              onClick={id == 4 ? logout : ""}
+              // onClick={id == =4 ? logout : ""}
               disablePadding
               sx={{ display: "block" }}
             >

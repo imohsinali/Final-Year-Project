@@ -12,7 +12,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { TransactionContext } from "../StateMangement/Admin";
 
-import { useContext,useEffect,useState } from "react";
+import { useContext} from "react";
 const theme = createTheme();
 
 
@@ -20,7 +20,7 @@ const theme = createTheme();
 
   
 export default function Registration() {
-  const { connectWallet, currentAccount, transactions,contract } =
+  const { currentAccount, contract } =
     useContext(TransactionContext);
  let naviagte= useNavigate()
 console.warn("reg",currentAccount)

@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 
 export default function TransferOwnership() {
     const [posts, setPosts] = useState(data2);
+    setPosts(data2)
+
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(11);
     const indexOfLastPost = currentPage * postsPerPage;
@@ -17,7 +19,7 @@ export default function TransferOwnership() {
     const handleChange = (event, value) => {
         setCurrentPage(value);
       };
-  const totalPage=Math.ceil(data2.length/11)
+  // const totalPage=Math.ceil(data2.length/11)
   return (
     <div className='table'>
         

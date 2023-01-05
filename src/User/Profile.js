@@ -30,7 +30,7 @@ export default function Profile() {
       setProfile(structuredData);
     };
     contract && viewProfile();
-  }, [contract])
+  }, [contract,currentAccount])
 
   const gridSpacing = 2;
   return (
@@ -69,6 +69,7 @@ export default function Profile() {
                 <img
                   src="https://image.shutterstock.com/image-vector/businessman-avatar-profile-picture-260nw-221565274.jpg"
                   className="user-image"
+                  alt="profile"
                 />
               </Paper>
               <Typography sx={{color:profile.isUserVerified?'green':'red',ml:2 }}>Account:{profile.isUserVerified?"Verified":"Not Verified"}</Typography>

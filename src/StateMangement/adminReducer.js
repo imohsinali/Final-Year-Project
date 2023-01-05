@@ -1,9 +1,12 @@
 
 import data from "../Data/adminData";
+
+import abi from "../contract/landregistry.json";
+import { ethers } from "ethers";
 export const initialState = {
 
     basket: data,
-    adminState:[]
+    connectWallect:{}
 }
 
   
@@ -69,7 +72,33 @@ export const initialState = {
 
       }
       case "ADMIN_CONTRACT":{
-        return { ...state,adminState:action.payload}; 
+        return { ...state,contract: action.payload}; 
+      }
+      case "Connect_Wallet":{
+        return {...state, wallet :async ()=> {
+          const contractAddress = "0xBaA0A7E9b4E4CAB42b2d14665957eE555C0f9267";
+          const contractAbi = abi.abi;
+      
+          try {
+            const { ethereum } = window;
+            if (ethereum) {
+              const account = await ethereum.request({
+                method: "eth_requestAccounts",
+              });
+            }
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+      
+            const contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              signer
+            );
+      
+          } catch (error) {
+            console.log(error);
+          }
+        }}
       }
 
 

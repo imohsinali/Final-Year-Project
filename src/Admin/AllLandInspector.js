@@ -23,7 +23,7 @@ export default function AllLandInspector() {
       setInspectors(inpsectors);
     };
     contract && viewInspector();
-  }, [])
+  }, [contract])
 
 
   const handleChange = (event, value) => {

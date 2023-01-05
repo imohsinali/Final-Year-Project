@@ -23,7 +23,7 @@ import { useContext,useEffect,useState } from "react";
   
 
 export default function Login() {
-  const { connectWallet, currentAccount, transactions,contract } =
+  const { connectWallet, currentAccount,contract } =
     useContext(TransactionContext);
     const [registered,setRegistered]=useState(false)
   // const {isRegistered}= useSelector((state) => state.userReducer);
@@ -35,7 +35,7 @@ export default function Login() {
       setRegistered(resgisterduser);
     };
     contract && viewInspector();
-  }, [contract])
+  }, [contract,currentAccount])
   console.log(currentAccount,registered)
   const navigate = useNavigate();
   const login = () => {

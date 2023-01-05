@@ -8,11 +8,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import Menu from "./MenuList";
 import { useLocation } from "react-router-dom";
 import { Avatar } from "@mui/material";
@@ -71,7 +69,7 @@ const Layout = ({ co }) => {
   };
   let { pathname } = useLocation();
   let title = pathname.substring(1).toUpperCase();
-  if (title.length == 0) {
+  if (title.length === 0) {
     title = "Dashboard";
   }
 

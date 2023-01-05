@@ -12,9 +12,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import LandscapeIcon from "@mui/icons-material/Landscape";
 import { Link } from "react-router-dom";
-const logout = () => {
-  localStorage.clear();
-};
+// const logout = () => {
+//   localStorage.clear();
+// };
 const list = [
   {
     id: 0,
@@ -78,7 +78,7 @@ const Menu = ({ open }) => {
           >
             <ListItem
               key={id}
-              onClick={id == 5 ? logout : ""}
+              // onClick={id == 5 ? logout : ""}
               disablePadding
               sx={{ display: "block" }}
               

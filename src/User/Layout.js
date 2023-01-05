@@ -70,7 +70,7 @@ const Layout = ({ co }) => {
   };
   let { pathname } = useLocation();
   let title = pathname.substring(1).toUpperCase();
-  if (title.length == 0) {
+  if (title.length === 0) {
     title = "Dashboard";
   }
 

@@ -7,14 +7,13 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import PeopleIcon from "@mui/icons-material/People";
 import TerrainIcon from '@mui/icons-material/Terrain';
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
 import VerifiedUser from "@mui/icons-material/VerifiedUser";
-const logout = () => {
-  localStorage.clear();
-};
+// const logout = () => {
+//   localStorage.clear();
+// };
 const list = [
   {
     id: 0,
@@ -68,7 +67,7 @@ const Menu = ({ open }) => {
           >
             <ListItem
               key={id}
-              onClick={id == 4 ? logout : ""}
+              // onClick={id == 4 ? logout : ""}
               disablePadding
               sx={{ display: "block" }}
             >

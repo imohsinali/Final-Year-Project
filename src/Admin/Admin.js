@@ -21,8 +21,9 @@ import { TransactionContext } from "../StateMangement/Admin";
 import { useContext } from "react";
 
 export default function Admin() {
-  const { connectWallet, currentAccount, transactions } =
+  const { connectWallet, currentAccount} =
     useContext(TransactionContext);
+    // console.log(connectWallet())
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -35,7 +36,7 @@ export default function Admin() {
     navigate("/dashboard");
   };
 
-  if (currentAccount == "0xa91ad5bc6487900b5d5ba28eac7d4bd40db06e76") {
+  if (currentAccount === "0xa91ad5bc6487900b5d5ba28eac7d4bd40db06e76") {
     login();
   }
 

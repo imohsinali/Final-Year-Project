@@ -4,9 +4,6 @@ import './index.css';
 import App from './App';
 
 // console.log(StateProvider);
-import store,{persistedStore}  from './StateMangement/store';
-import { PersistGate } from 'redux-persist/es/integration/react';
-import { Provider } from 'react-redux';
 import {TransactionsProvider} from './StateMangement/Admin'
 // store.subscribe(()=>console.log(store.getState()))
 ReactDOM.render(

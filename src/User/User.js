@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import LandGallery from "./LandGallery";
 import Protected from "./Protected";
-import Home from "../Home";
 function User() {
   const login =localStorage.getItem("login")
   // let login= false
@@ -12,7 +11,6 @@ function User() {
   return (
     <Router>
       <Routes>
-       <Route  path="/" element={<Home />} />
       
      <Route path="/login" element={<Login />} />
       <Route path="dashboard" element={<Protected Component={Dashboard} />} />
