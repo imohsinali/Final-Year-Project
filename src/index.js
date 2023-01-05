@@ -4,12 +4,11 @@ import './index.css';
 import App from './App';
 
 // console.log(StateProvider);
-import store,{persistedStore}  from './StateMangement/store';
-import { PersistGate } from 'redux-persist/es/integration/react';
-import { Provider } from 'react-redux';
 import {TransactionsProvider} from './StateMangement/Admin'
-// store.subscribe(()=>console.log(store.getState()))
-ReactDOM.render(
+import { createRoot } from 'react-dom/client';
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
     {/* <Provider store={store}> */}
       {/* <PersistGate persistor={persistedStore}> */}
@@ -22,5 +21,5 @@ ReactDOM.render(
    {/* </Provider> */}
   
   </React.StrictMode>,
-  document.getElementById('root')
+  // document.getElementById('root')
 );
