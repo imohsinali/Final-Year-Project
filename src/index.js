@@ -5,8 +5,10 @@ import App from './App';
 
 // console.log(StateProvider);
 import {TransactionsProvider} from './StateMangement/Admin'
-// store.subscribe(()=>console.log(store.getState()))
-ReactDOM.render(
+import { createRoot } from 'react-dom/client';
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
     {/* <Provider store={store}> */}
       {/* <PersistGate persistor={persistedStore}> */}
@@ -19,5 +21,5 @@ ReactDOM.render(
    {/* </Provider> */}
   
   </React.StrictMode>,
-  document.getElementById('root')
+  // document.getElementById('root')
 );

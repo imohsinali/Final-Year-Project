@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import admin from './images/Admin.png'
 import inspector from './images/inspector.png'
@@ -64,19 +64,19 @@ const [path,setPath]=useState({Inspector:true,Admin:true,User:true})
       <Link to={"Adminlogin"} onClick={()=>setPath({Inspector:false,Admin:true,User:false})} style={{ textDecoration: 'none' }}>
 
         <div>
-        <img src={admin} alt="adimin"/>
+        <img src={admin}/>
         <h3>Admin</h3>
         </div> </Link>
         <Link to={'Inspectorlogin'} onClick={()=>setPath({Inspector:false,Admin:true,User:false})}   style={{ textDecoration: 'none' }} >
      
         <div>
-          <img src={inspector} alt='inspector'/>
+          <img src={inspector}/>
           <h3>Inspector</h3>
         </div>
         </Link>
         <Link to={"Userlogin"} onClick={()=>setPath({Inspector:false,Admin:false,User:true})} style={{ textDecoration: 'none' }}>
 
-        <div><img src={User} alt="user"/>
+        <div><img src={User}/>
         <h3>User</h3>
         </div></Link>
 

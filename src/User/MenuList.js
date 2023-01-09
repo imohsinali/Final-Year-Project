@@ -12,9 +12,6 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import LandscapeIcon from "@mui/icons-material/Landscape";
 import { Link } from "react-router-dom";
-// const logout = () => {
-//   localStorage.clear();
-// };
 const list = [
   {
     id: 0,

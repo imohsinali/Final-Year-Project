@@ -19,30 +19,63 @@ import { useNavigate } from "react-router-dom";
 import { TransactionContext } from "../StateMangement/Admin";
 
 import { useContext,useEffect,useState } from "react";
+import { ethers } from 'ethers';
 
-  
 
 export default function Login() {
-  const { connectWallet, currentAccount,contract } =
+  const { connectWallet, currentAccount, transactions,contract ,provider} =
     useContext(TransactionContext);
     const [registered,setRegistered]=useState(false)
   // const {isRegistered}= useSelector((state) => state.userReducer);
-    
-
+  // let provider=contract.provider
+console.log('iam provider', provider)
   useEffect(() => {
     const viewInspector = async () => {
       const resgisterduser = await contract.isUserRegistered(currentAccount);
       setRegistered(resgisterduser);
     };
     contract && viewInspector();
-  }, [contract,currentAccount])
-  console.log(currentAccount,registered)
+  }, [contract])
   const navigate = useNavigate();
   const login = () => {
     localStorage.setItem("Userlogin", true);
     navigate('/profile')
     
   };
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
+
+  function handleLogout() {
+
+    provider.enable([]).then(function(accounts) {
+      console.log('MetaMask is now logged out');
+      setIsLoggedOut(true);
+    });
+
+  }
+  
+    // const [privateKey, setPrivateKey] = useState('');
+  
+    function handleSubmitP(event) {
+      event.preventDefault();
+  
+      // Add the private key to MetaMask's accounts
+      const data = new FormData(event.currentTarget);
+      let privateKey=data.get('key')
+      console.log(privateKey)
+      const account = ethers.Wallet.fromPrivateKey(privateKey);
+      window.ethereum.sendAsync({
+        method: 'eth_accounts_wallet_add',
+        params: [account.signingKey.address]
+      }, function(err, added) {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(`Account added: ${added}`);
+        }
+      });
+    }
+  
+    
   
   const handleSubmit = () => {
     // event.preventDefault();
@@ -58,7 +91,6 @@ export default function Login() {
     }
     if(currentAccount&&registered)
     {
-      console.warn(' iam in login')
       // window.location.reload();
 
       login()
@@ -116,7 +148,7 @@ export default function Login() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmitP}
             sx={{ mt: 4, width: 500, maxWidth: "100%" }}
             
           >

@@ -10,6 +10,7 @@ export default function Verifyland() {
   const currentPosts = data2.slice(indexOfFirstPost, indexOfLastPost);
 
   // Change page
+  // const dispatch=useDispatch()
   const handleChange = (event, value) => {
     setCurrentPage(value);
   

@@ -5,7 +5,7 @@ import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 export default function Dashboard() {
-  const myState=useSelector((state)=>state.changeTheNumber)
+  const myState=1
 
   const gridSpacing = 3;
   return (

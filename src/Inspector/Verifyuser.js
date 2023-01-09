@@ -2,6 +2,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useState,useEffect,useContext } from "react";
 import { TransactionContext } from "../StateMangement/Admin"
+import data from './data'
 
 export default function VerifyUser() {
   const {  contract } = useContext(TransactionContext); 
@@ -30,7 +31,7 @@ export default function VerifyUser() {
         setUsers(users);
       };
       contract && viewAllUser();
-    }, [contract])
+    }, [])
     console.log(users)
   
   const handleChange = (event, value) => {

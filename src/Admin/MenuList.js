@@ -58,8 +58,8 @@ const Menu = ({ open }) => {
             }}
           >
             <ListItem
-              key={id}
-              // onClick={id == =4 ? logout : ""}
+              key={icon}
+              // onClick={id == 4 ? logout : ""}
               disablePadding
               sx={{ display: "block" }}
             >

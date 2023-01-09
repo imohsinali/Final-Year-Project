@@ -21,11 +21,12 @@ import { useNavigate } from "react-router-dom";
 import { TransactionContext } from "../StateMangement/Admin";
 
 import { useContext,useEffect,useState } from "react";
+import { ethers } from 'ethers';
 
 
   
 export default function Login() {
-  const { connectWallet, currentAccount,contract } =
+  const { connectWallet, currentAccount, transactions,contract } =
     useContext(TransactionContext);
     const [registered,setRegistered]=useState(false)
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function Login() {
       setRegistered(resgisterduser);
     };
     contract && viewInspector();
-  }, [contract,currentAccount])
+  }, [contract])
 
   const navigate = useNavigate();
   const login = () => {
