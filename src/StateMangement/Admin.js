@@ -116,7 +116,7 @@ export const TransactionsProvider = ({ children }) => {
         connectWallet,
         checkIfWalletIsConnect,
         currentAccount,
-        transactions,
+        // transactions,
         contract,
         provider
       }}
