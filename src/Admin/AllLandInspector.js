@@ -1,7 +1,7 @@
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useState ,useEffect} from "react";
-import { TransactionContext } from "../StateMangement/Admin"
+import { TransactionContext } from "../StateMangement/Context"
 import { useContext } from "react";
 export default function AllLandInspector() {
   const {  contract } = useContext(TransactionContext); 

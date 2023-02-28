@@ -9,12 +9,17 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { TransactionContext } from "../StateMangement/Context";
+import { ethers } from "ethers";
+import DrawLand from "./DrawLand";
 
 const theme = createTheme();
 
 export default function AddLand() {
+    const { contract, currentAccount } = React.useContext(TransactionContext);
+
   let toastId = null;
-  const isVerifed=false;
+  const isVerifed=true;
 
   function notify(fname,cname) {
     if (!toast.isActive(toastId)) {
@@ -31,8 +36,22 @@ export default function AddLand() {
       console.log("Toast already active");
     }
   }
+      // function addLand(uint _area, string memory _address, uint landPrice,string memory _allLatiLongi, uint _propertyPID,string memory _surveyNum, string memory _document) public {
+const [profile, setProfile] = React.useState([]);
+
+  React.useEffect(() => {
+    const viewProfile = async () => {
+      const user = await contract.UserMapping(currentAccount);
+      const structuredData = {
+        isUserVerified: user.isUserVerified,
+      };
+      setProfile(structuredData);
+    };
+    contract && viewProfile();
+  }, [contract, currentAccount]);
+console.log(profile)
   
-  const handleSubmit = (event) => {
+  const handleSubmit =async (event) => {
   
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -43,6 +62,23 @@ export default function AddLand() {
      data.get("landArea")&&
      data.get('price'))
     {
+
+       const transaction = await contract.addLand(
+         10000,
+         "old bank stop",
+         ethers.utils.parseEther('0.001')._hex,
+         "1001000",
+         10,
+         "5",
+         "7130149",
+
+         { gasLimit: 1000000 }
+       );
+       await transaction.wait();
+
+       console.log("Transaction is done");
+     
+
         
         let fname="Form Submit Successfully!"
       let cname="toast-success-container"
@@ -75,9 +111,8 @@ export default function AddLand() {
             alignItems: "center",
           }}
         >
-          
           <Typography component="h1" variant="h5">
-             Land Registration
+            Land Registration
           </Typography>
           <Box
             component="form"
@@ -200,28 +235,29 @@ export default function AddLand() {
                 />
               </Grid>
             </Grid>
-            { isVerifed?(
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 1, mb: 2, }}
-              
-               
-            >
-              Submit
-            </Button>):(
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 1, mb: 2, }}
-              disabled
-               
-            >
-              Submit
-            </Button>)}
-            <ToastContainer/>
+            {profile.isUserVerified ? (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 1, mb: 2 }}
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 1, mb: 2 }}
+                disabled
+              >
+                Submit
+              </Button>
+            )}
+            <DrawLand />
+
+            <ToastContainer />
           </Box>
         </Box>
       </Container>

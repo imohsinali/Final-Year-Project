@@ -1,7 +1,7 @@
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useState,useEffect,useContext } from "react";
-import { TransactionContext } from "../StateMangement/Admin"
+import { TransactionContext } from "../StateMangement/Context"
 import data from './data'
 
 export default function VerifyUser() {

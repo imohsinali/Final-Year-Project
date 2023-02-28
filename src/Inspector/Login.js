@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 
 // isLandInspector
-import { TransactionContext } from "../StateMangement/Admin";
+import { TransactionContext } from "../StateMangement/Context";
 
 import { useContext,useEffect,useState } from "react";
 import { ethers } from 'ethers';

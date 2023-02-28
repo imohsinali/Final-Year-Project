@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
 import { useState ,useEffect} from "react";
-import { TransactionContext } from "../StateMangement/Admin"
+import { TransactionContext } from "../StateMangement/Context"
 import { useContext } from "react";
   
 export default function Profile() {
