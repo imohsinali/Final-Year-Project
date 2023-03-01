@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { TransactionContext } from "../StateMangement/Context";
 import { ethers } from "ethers";
 import DrawLand from "./DrawLand";
+import { Link } from "react-router-dom";
 
 const theme = createTheme();
 
@@ -214,14 +215,23 @@ console.log(profile)
                 />
               </Grid>
               <Grid item xs={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="map"
-                  label="Add Location"
-                  name="map"
-                  autoComplete="map"
-                />
+                <Link
+                  to={'/addlocation'}
+                  style={{
+                    textDecoration: "none",
+
+                    color: "inherit",
+                  }}
+                >
+                  <Button
+                    type="link"
+                    fullWidth
+                    variant=""
+                    sx={{ mt: 1, mb: 2 }}
+                  >
+                    Add location
+                  </Button>
+                </Link>
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -255,7 +265,6 @@ console.log(profile)
                 Submit
               </Button>
             )}
-            <DrawLand />
 
             <ToastContainer />
           </Box>

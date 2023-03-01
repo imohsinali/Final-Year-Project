@@ -27,6 +27,8 @@ import UDashboard from "./User/Dashboard";
 import ULandGallery from "./User/LandGallery";
 import UProtected from "./User/Protected";
 import UAddLand from "./User/AddLand";
+import DrawLand from "./User/DrawLand";
+
 import Profile from "./User/Profile";
 const App = () => {
   
@@ -136,6 +138,10 @@ const [path,setPath]=useState({Inspector:true,Admin:true,User:true})
       <Route
         path="addland"
         element={<UProtected Component={UAddLand} />}
+      />
+      <Route
+        path="addlocation"
+        element={<UProtected Component={DrawLand} />}
       />
       <Route
         path="registration"

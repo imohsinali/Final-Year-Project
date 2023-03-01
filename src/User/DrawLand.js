@@ -1,100 +1,101 @@
-
-
-import React, { useState } from 'react';
-import ReactMapGL, { Source, Layer, NavigationControl } from 'react-map-gl';
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import ReactMapboxGl, { GeoJSONLayer } from "react-mapbox-gl";
+import DrawControl from "react-mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
-import { Button, Input } from "antd";
-import "antd/dist/antd.css";
+import "./styles.css";
 
-const MAPBOX_TOKEN =   "pk.eyJ1IjoibW9oYWluYmFsdGkiLCJhIjoiY2xhNGE2ZWd0MHg4ZTNwbXpiN2Q3a2ZsYiJ9.2J8OizwcJnm4U0Idhsu5IA"
+const Map = ReactMapboxGl({
+  accessToken:
+    "pk.eyJ1IjoiZmFrZXVzZXJnaXRodWIiLCJhIjoiY2pwOGlneGI4MDNnaDN1c2J0eW5zb2ZiNyJ9.mALv0tCpbYUPtzT7YysA2g",
+});
 
-
-const Map = () => {
-  const [viewport, setViewport] = useState({
-    width: "100%",
-    height: "600px",
-    latitude: 37.7577,
-    longitude: -122.4376,
-    zoom: 11,
-  });
-
-  const [geojson, setGeojson] = useState(null);
-  const [imageName, setImageName] = useState("");
-
-  const handleSave = () => {
-    const canvas = document.getElementsByClassName("mapboxgl-canvas")[0];
-    const dataURL = canvas.toDataURL("image/png");
-    FileDownload(dataURL, `${imageName}.png`);
+export default class App extends Component {
+  onDrawCreate = ({ features }) => {
+    console.log(features);
   };
-const handleSearch = (value) => {
-  const geocodingUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-    value
-  )}.json?access_token=${MAPBOX_TOKEN}&limit=1`;
 
-  fetch(geocodingUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.features.length > 0) {
-        const feature = data.features[0];
-        setViewport({
-          ...viewport,
-          latitude: feature.center[1],
-          longitude: feature.center[0],
-          zoom: 14,
-        });
-      }
-    })
-    .catch((error) => console.log(error));
-};
+  onDrawUpdate = ({ features }) => {
+    console.log({ features });
+  };
 
+  render() {
+    const geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {
+            text: "Fort Greene",
+          },
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              [
+                [-73.97777080535889, 40.69336192556367],
+                [-73.97704124450682, 40.68986390865585],
+                [-73.97315740585327, 40.68970120572578],
+                [-73.97388696670532, 40.69323177008439],
+                [-73.97777080535889, 40.69336192556367],
+              ],
+            ],
+          },
+        },
+      ],
+    };
 
-  return (
-    <div>
-      <Input.Search
-        placeholder="Search for a location"
-        onSearch={handleSearch}
-        enterButton
-      />
-      <ReactMapGL
-        {...viewport}
-        mapboxApiAccessToken={MAPBOX_TOKEN}
-        mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
-        onViewportChange={(viewport) => setViewport(viewport)}
-      >
-        <NavigationControl />
-        {geojson && (
-          <Source id="my-data" type="geojson" data={geojson}>
-            <Layer
-              id="my-layer"
-              type="fill"
-              paint={{
-                "fill-color": "#f00",
-                "fill-opacity": "1",
-              }}
-            />
-          </Source>
-        )}
-        <MapboxDraw
-          data={geojson}
-          onChange={(data) => setGeojson(data)}
-          mode="draw_polygon"
-        />
-      </ReactMapGL>
-      <div style={{ marginTop: "10px" }}>
-        <Input
-          placeholder="Image name"
-          value={imageName}
-          onChange={(e) => setImageName(e.target.value)}
-        />
-        <Button type="primary" onClick={handleSave}>
-          Save
-        </Button>
+    const geojsonStyles = {
+      lineLayout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      linePaint: {
+        "line-color": "#ff11ff",
+        "line-width": 4,
+        "line-opacity": 1,
+      },
+      symbolLayout: {
+        "text-field": "{text}",
+        "symbol-placement": "line",
+        "text-rotation-alignment": "map",
+        "text-size": {
+          base: 1,
+          stops: [
+            [9, 9],
+            [14, 12],
+          ],
+        },
+      },
+      symbolPaint: {
+        "text-color": "rgba(0, 0, 0, 1)",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 2,
+      },
+    };
+
+    return (
+      <div className="App">
+        <Map
+          style="mapbox://styles/mapbox/streets-v9" // eslint-disable-line
+          containerStyle={{
+            height: "100vh",
+            width: "100vw",
+          }}
+          zoom={[16]}
+          center={[-73.9757752418518, 40.69144210646147]}
+        >
+          <DrawControl
+            position="top-left"
+            onDrawCreate={this.onDrawCreate}
+            onDrawUpdate={this.onDrawUpdate}
+          />
+          <GeoJSONLayer {...geojsonStyles} data={geojson} />
+        </Map>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
-export default Map;
- 
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
