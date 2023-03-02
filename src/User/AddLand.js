@@ -11,16 +11,23 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TransactionContext } from "../StateMangement/Context";
 import { ethers } from "ethers";
-import DrawLand from "./DrawLand";
 import { Link } from "react-router-dom";
+import axios from 'axios'
+// import { create as ipfsHttpClient } from "ipfs-http-client";
 
+// const ipfs = ipfsHttpClient({
+//   host: "ipfs.alchemyapi.io",
+//   port: 443,
+//   protocol: "https",
+//   headers: { authorization: "Bearer " + process.env.goerli_apikey },
+// });
+// console.log('ipfs', ipfs)
 const theme = createTheme();
 
 export default function AddLand() {
     const { contract, currentAccount } = React.useContext(TransactionContext);
 
   let toastId = null;
-  const isVerifed=true;
 
   function notify(fname,cname) {
     if (!toast.isActive(toastId)) {
@@ -57,27 +64,57 @@ console.log(profile)
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     if( data.get("email") &&
-    data.get("district")&&
-    data.get("identificationcard")&&
-     data.get("name")&&
-     data.get("landArea")&&
-     data.get('price'))
+    // data.get("district")&&
+    // data.get("identificationcard")&&
+    //  data.get("name")&&
+    //  data.get("landArea")&&
+    //  data.get('price')&&
+     data.get('document'))
     {
+               const formData = new FormData();
+        formData.append("file", data.get('document'));
+            console.log(formData);
+
+        const resFile = await axios({
+          method: "post",
+          url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+          data: formData,
+          headers: {
+            pinata_api_key: `7cef58394b1f0a591f15`,
+            pinata_secret_api_key: `54098153be2dc5cc4dc335c06b91cbe1dc5dbae086263a764708f16eeee76ad4
+
+`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
+        console.log(ImgHash)
+        //const signer = contract.connect(provider.getSigner());
+        // const signer = contract.connect(provider.getSigner());
+        // signer.add(account, ImgHash);
+      
+    
+    alert("Successfully Image Uploaded");
+    // setFileName("No image selected");
+    // setFile(null);
+  
+    // function addLand(uint _area, string memory _address, uint landPrice,string memory _allLatiLongi, uint _propertyPID,string memory _surveyNum, string memory _document) public {
+
 
        const transaction = await contract.addLand(
          10000,
          "old bank stop",
-         ethers.utils.parseEther('0.001')._hex,
+         ethers.utils.parseEther('0.00001')._hex,
          "1001000",
          10,
          "5",
-         "7130149",
+         ImgHash,
 
          { gasLimit: 1000000 }
        );
        await transaction.wait();
 
-       console.log("Transaction is done");
+
      
 
         
@@ -273,3 +310,5 @@ console.log(profile)
     </ThemeProvider>
   );
 }
+
+

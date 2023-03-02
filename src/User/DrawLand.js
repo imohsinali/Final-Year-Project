@@ -1,101 +1,106 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import ReactMapboxGl, { GeoJSONLayer } from "react-mapbox-gl";
-import DrawControl from "react-mapbox-gl-draw";
-import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
-
 import "./styles.css";
+import React, { useRef, useEffect, useState } from "react";
+import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import "mapbox-gl/dist/mapbox-gl.css";
+import { Container, TextField, IconButton } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 
-const Map = ReactMapboxGl({
-  accessToken:
-    "pk.eyJ1IjoiZmFrZXVzZXJnaXRodWIiLCJhIjoiY2pwOGlneGI4MDNnaDN1c2J0eW5zb2ZiNyJ9.mALv0tCpbYUPtzT7YysA2g",
-});
 
-export default class App extends Component {
-  onDrawCreate = ({ features }) => {
-    console.log(features);
+mapboxgl.accessToken =
+  "pk.eyJ1IjoibW9oYWluYmFsdGkiLCJhIjoiY2xhNGE2ZWd0MHg4ZTNwbXpiN2Q3a2ZsYiJ9.2J8OizwcJnm4U0Idhsu5IA";
+
+export default function App() {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const [lng, setLng] = useState(65);
+  const [lat, setLat] = useState(30);
+  const [zoom, setZoom] = useState(4);
+  const [searchText, setSearchText] = useState("");
+  const [polygon, setPolygon] = useState([]);
+
+  useEffect(() => {
+    if (map.current) return; // initialize map only once
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/satellite-streets-v11",
+      center: [lng, lat],
+      zoom: zoom,
+      height: "calc(100vh - 130px)",
+      width: "100%",
+    });
+      handleDraw();
+
+  });
+
+  useEffect(() => {
+    if (!map.current) return; // wait for map to initialize
+    map.current.on("move", () => {
+      setLng(map.current.getCenter().lng.toFixed(4));
+      setLat(map.current.getCenter().lat.toFixed(4));
+      setZoom(map.current.getZoom().toFixed(2));
+    });
+  });
+
+  const handleSearch = () => {
+    if (!searchText) return;
+    fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+        searchText
+      )}.json?access_token=${mapboxgl.accessToken}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const [lng, lat] = data.features[0].center;
+        map.current.setCenter([lng, lat]);
+        map.current.setZoom(14);
+      });
   };
 
-  onDrawUpdate = ({ features }) => {
-    console.log({ features });
+  const handleDraw = () => {
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: true,
+        trash: true,
+      },
+    });
+    map.current.addControl(draw);
+
+    map.current.on("draw.create", (e) => {
+      setPolygon(e.features[0].geometry.coordinates[0]);
+    });
+
+    map.current.on("draw.delete", () => {
+      setPolygon([]);
+    });
   };
 
-  render() {
-    const geojson = {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {
-            text: "Fort Greene",
-          },
-          geometry: {
-            type: "Polygon",
-            coordinates: [
-              [
-                [-73.97777080535889, 40.69336192556367],
-                [-73.97704124450682, 40.68986390865585],
-                [-73.97315740585327, 40.68970120572578],
-                [-73.97388696670532, 40.69323177008439],
-                [-73.97777080535889, 40.69336192556367],
-              ],
-            ],
-          },
-        },
-      ],
-    };
-
-    const geojsonStyles = {
-      lineLayout: {
-        "line-join": "round",
-        "line-cap": "round",
-      },
-      linePaint: {
-        "line-color": "#ff11ff",
-        "line-width": 4,
-        "line-opacity": 1,
-      },
-      symbolLayout: {
-        "text-field": "{text}",
-        "symbol-placement": "line",
-        "text-rotation-alignment": "map",
-        "text-size": {
-          base: 1,
-          stops: [
-            [9, 9],
-            [14, 12],
-          ],
-        },
-      },
-      symbolPaint: {
-        "text-color": "rgba(0, 0, 0, 1)",
-        "text-halo-color": "rgba(255, 255, 255, 1)",
-        "text-halo-width": 2,
-      },
-    };
-
-    return (
-      <div className="App">
-        <Map
-          style="mapbox://styles/mapbox/streets-v9" // eslint-disable-line
-          containerStyle={{
-            height: "100vh",
-            width: "100vw",
-          }}
-          zoom={[16]}
-          center={[-73.9757752418518, 40.69144210646147]}
-        >
-          <DrawControl
-            position="top-left"
-            onDrawCreate={this.onDrawCreate}
-            onDrawUpdate={this.onDrawUpdate}
-          />
-          <GeoJSONLayer {...geojsonStyles} data={geojson} />
-        </Map>
+  return (
+    <Container
+      maxWidth="100%"
+      sx={{
+        mt: 2,
+        mb: 4,
+      }}
+    >
+      <div className="search-bar">
+        <TextField
+          label="Search"
+          variant="outlined"
+          size="small"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <IconButton onClick={handleSearch}>
+          <SearchIcon />
+        </IconButton>
       </div>
-    );
-  }
+      <div className="sidebar">
+        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+      </div>
+      <div ref={mapContainer} className="map-container" />
+    </Container>
+  );
 }
 
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);

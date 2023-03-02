@@ -24,6 +24,7 @@
     "formik": "^2.2.9",
     "framer-motion": "^7.6.1",
     "glamor": "^2.20.40",
+    "ipfs-http-client": "^60.0.0",
     "mantine-datatable": "^1.7.9",
     "mapbox-gl": "^2.13.0",
     "react": "^18.2.0",
@@ -47,8 +48,7 @@
     "web3": "^1.8.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "GENERATE_SOURCEMAP=false && react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
