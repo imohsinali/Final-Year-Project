@@ -12,14 +12,14 @@ import { useEffect } from "react";
 import { Button } from "@mui/material";
 
 
-export default function LandGallery() {
+export default function MyLand() {
     const { contract, currentAccount } = useContext(TransactionContext);
     const [user,setUsers]=useState([])
 useEffect(() => {
+  console.log(currentAccount);
   const Lands = async () => {
-    const allLand = await contract.ReturnAllLandList();
-    const myrequest= await contract.mySentLandRequests();
-    console.log('ali',myrequest);
+    const allLand = await contract.myAllLands(currentAccount);
+    console.log(allLand);
     const users = await Promise.all(
       allLand.map(async (landId) => {
         const {
@@ -49,19 +49,14 @@ useEffect(() => {
 
   contract && Lands();
 }, []);
-
-let newu = user.filter(
-  (u) => u.ownerAddress.toLowerCase() != currentAccount && u.isforSell
-);
-console.log('mausdufsaojd',newu)
-console.log("ali")
-const requestforBuy= async(id)=>{
-   await contract.requestforBuy(id);
+console.log(user);
+const sellLand= async(id)=>{
+  const bool = await contract.makeItforSell(id);
 }
   return (
     <Container maxWidth="100%" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
-        {newu.map((item) => {
+        {user.map((item) => {
           const {
             ownerAddress,
             landAddress,
@@ -69,8 +64,9 @@ const requestforBuy= async(id)=>{
             document,
             isLandVerified,
             id,
-            isforSell,
+            isforSell
           } = item;
+        
           return (
             <Grid item xs={12} md={4} lg={3} key={id}>
               <Paper
@@ -106,13 +102,27 @@ const requestforBuy= async(id)=>{
                   alignItems={"center"}
                   gap="4px"
                 >
-                  <Button
-                    onClick={() => requestforBuy(id)}
-                    variant="outlined"
-                    color="error"
-                  >
-                    Send Buy request
-                  </Button>
+                  {isLandVerified ? (
+                    <Button
+                      onClick={() => {
+                        if (isforSell) {
+                          // The land is already on sale
+                          alert("The land is already on sale.");
+                        } else {
+                          // The land is verified and not on sale yet
+                          sellLand(id);
+                        }
+                      }}
+                      variant="outlined"
+                      color={isforSell ? "secondary" : "primary"}
+                    >
+                      {isforSell ? "On Sale" : "Make it for Sale"}
+                    </Button>
+                  ) : (
+                    <Button variant="outlined" color="primary" disabled>
+                      Verify Land First
+                    </Button>
+                  )}
 
                   <Button variant="outlined">Veiw Details</Button>
                 </Grid>

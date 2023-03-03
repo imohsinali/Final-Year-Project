@@ -2,7 +2,6 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useState,useEffect,useContext } from "react";
 import { TransactionContext } from "../StateMangement/Context"
-import data from './data'
 
 export default function VerifyUser() {
   const {  contract } = useContext(TransactionContext); 
@@ -20,6 +19,7 @@ export default function VerifyUser() {
     useEffect(() => {
       const viewAllUser = async () => {
         const userAddresses = await contract.ReturnAllUserList();
+        console.log(userAddresses);
         const users = await Promise.all(
           userAddresses.map(async (address) => {
             const {name,city,age,isUserVerified,cinc} = await contract.UserMapping(address)
@@ -81,7 +81,9 @@ export default function VerifyUser() {
                 {data.name}
               </td>
               <td>
-                {data.document}
+              <button>
+                View Document
+              </button>
               </td>
               <td>
                  {

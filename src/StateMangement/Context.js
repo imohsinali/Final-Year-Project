@@ -56,6 +56,7 @@ export const TransactionsProvider = ({ children }) => {
         const transactionsContract = createEthereumContract();
 
         const availableTransactions = await transactionsContract.ReturnAllLandIncpectorList()
+        
          console.log(availableTransactions)
         // const structuredTransactions = availableTransactions.map((transaction) => ({
         //   name: transaction.name,

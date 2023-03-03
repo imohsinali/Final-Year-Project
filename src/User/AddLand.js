@@ -88,10 +88,6 @@ console.log(profile)
           },
         });
         const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
-        console.log(ImgHash)
-        //const signer = contract.connect(provider.getSigner());
-        // const signer = contract.connect(provider.getSigner());
-        // signer.add(account, ImgHash);
       
     
     alert("Successfully Image Uploaded");
@@ -102,15 +98,15 @@ console.log(profile)
 
 
        const transaction = await contract.addLand(
-         10000,
-         "old bank stop",
-         ethers.utils.parseEther('0.00001')._hex,
-         "1001000",
+         100,
+         "islambad",
+         ethers.utils.parseEther('0.000000000000001')._hex,
+         "100",
          10,
          "5",
          ImgHash,
 
-         { gasLimit: 1000000 }
+         { gasLimit: 500000 }
        );
        await transaction.wait();
 

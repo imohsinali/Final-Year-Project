@@ -41,7 +41,7 @@ data.get("address")&&
   // function registerUser(string memory _name, uint _age, string memory _city,string memory _cinc, string memory _document, string memory _email
 
   // const transaction = await contract.registerUser(data.get('name'),data.get('age'),data.get('city'), data.get('cinc'),"doc",data.get('email'), { gasLimit: 10000000 });
-  const transaction = await contract.registerUser("mohsin",22,'skd', 'hello',"doc",'email', { gasLimit: 1000000 });
+  const transaction = await contract.registerUser("mohsin",22,'skd', 'hello',"doc",'email', { gasLimit: 500000 });
 
     await transaction.wait();
 
