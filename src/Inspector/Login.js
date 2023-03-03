@@ -26,12 +26,14 @@ import { ethers } from 'ethers';
 
   
 export default function Login() {
+  console.log('moshin')
   const { connectWallet, currentAccount, transactions,contract } =
     useContext(TransactionContext);
     const [registered,setRegistered]=useState(false)
   useEffect(() => {
     const viewInspector = async () => {
       const resgisterduser = await contract.isLandInspector(currentAccount);
+      console.log(resgisterduser);
       setRegistered(resgisterduser);
     };
     contract && viewInspector();

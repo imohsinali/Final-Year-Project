@@ -34,8 +34,6 @@ const list = [
     text: "My Land",
     path: "/myLand",
   },
-  
-
 
   {
     id: 3,
@@ -47,12 +45,19 @@ const list = [
   {
     id: 4,
 
+    icon: <AddPhotoAlternateIcon />,
+    text: "My Buy Request",
+    path: "/myBuyRequest",
+  },
+  {
+    id: 5,
+
     icon: <PeopleIcon />,
     text: "profile",
     path: "/profile",
   },
   {
-    id: 5,
+    id: 6,
 
     icon: <LogoutIcon />,
     text: "logout",

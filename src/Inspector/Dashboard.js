@@ -3,8 +3,28 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
-import { useSelector } from "react-redux";
+import { TransactionContext } from "../StateMangement/Context";
+import { useEffect } from "react";
+import { useContext } from "react";
 export default function Dashboard() {
+  const { contract } = useContext(TransactionContext); 
+  const [totalUser,setTotalUser]=React.useState(0)
+  const [totalProperty, setTotalProperty] = React.useState(0);
+  const [totalTranfered, setTotalTranfered] = React.useState(0);
+
+
+  useEffect(() => {
+    const TotalRegistered = async () => {
+      const allLand = await contract.ReturnAllLandList();
+      const userAddresses = await contract.ReturnAllUserList();
+      setTotalUser(userAddresses.length);
+      setTotalProperty(allLand.slice(1).length);
+
+    };
+
+    contract && TotalRegistered();
+  }, []);
+
   const myState=1
 
   const gridSpacing = 3;
@@ -39,7 +59,7 @@ export default function Dashboard() {
             >
               Total Users Registerd
               <Typography>
-                {myState}
+                {totalUser}
               </Typography>
             </Typography>
               </Paper>
@@ -65,7 +85,7 @@ export default function Dashboard() {
             >
               Total Property Registerd
               <Typography>
-                100000
+                {totalProperty}
               </Typography>
             </Typography>
               </Paper>
@@ -91,7 +111,7 @@ export default function Dashboard() {
             >
               Total Property Transfered
               <Typography>
-                30
+                {totalTranfered}
               </Typography>
             </Typography>
                   </Paper>
