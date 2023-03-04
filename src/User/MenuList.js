@@ -44,15 +44,33 @@ const list = [
     text: "Add Land",
     path: "/addland",
   },
+
+  {
+    id: 3,
+
+    icon: <AddPhotoAlternateIcon />,
+    text: "Send Sell Request",
+    path: "/myBuyRequest",
+  },
+
   {
     id: 4,
+
+    icon: <AddPhotoAlternateIcon />,
+    text: "Recieve Buy Request",
+    path: "/recivedrequest",
+  },
+  
+  {
+    id: 5,
 
     icon: <PeopleIcon />,
     text: "profile",
     path: "/profile",
   },
+
   {
-    id: 5,
+    id: 7,
 
     icon: <LogoutIcon />,
     text: "logout",

@@ -14,13 +14,12 @@ export default function RecivedRequest() {
   const currentPosts = users.slice(indexOfFirstPost, indexOfLastPost);
   useEffect(() => {
     const Lands = async () => {
-      const allLand = await contract.ReturnAllLandList();
-      const myrequest = await contract.LandRequestMapping(10);
-      const allLandm = await contract.landsCount();
-      console.log("ali 23", allLandm);
+      const allLand = await contract.myReceivedLandRequests();
+      const myrequest = await contract.LandRequestMapping(2);
+      console.log("ali", myrequest);
 
       const users = await Promise.all(
-        [1,2,3,4,5,6,7,8,9,11,12].map(async (id) => {
+        allLand.map(async (id) => {
           const {
             sellerId,
             buyerId,
@@ -44,28 +43,18 @@ export default function RecivedRequest() {
         const status = await contract.requesteStatus(landId);
         return status;
       };
-     const documnt=async(landId)=>{
-      const doc=await contract.lands(landId)
-      return doc
-     }
+
       const usersWithStatus = await Promise.all(
         users.map(async (user) => {
           const status = await getStatus(user.landId);
-          const { document } = await documnt(user.landId);
           return {
             ...user,
             status,
-            document,
           };
         })
       );
-      console.log(usersWithStatus);
-const filteredLands = usersWithStatus.filter(
-  (land) => land.requestStatus === 3 || land.requestStatus===4
-);
 
-
-      setUsers(filteredLands);
+      setUsers(usersWithStatus);
     };
 
     contract && Lands();
@@ -82,12 +71,17 @@ const filteredLands = usersWithStatus.filter(
     3: "paymentdone",
     4: "completed",
   };
-
-
-  const TransferOwner = async (id,url) => {
+  const Accepted = async (id) => {
     console.log(id);
-    await contract.transferOwnership(id,url, {
-      gasLimit: 200000,
+    await contract.acceptRequest(id, {
+      gasLimit: 100000,
+    });
+  };
+
+  const Rejected = async (id) => {
+    console.log(id);
+    await contract.rejectRequest(id, {
+      gasLimit: 100000,
     });
   };
   return (
@@ -97,10 +91,11 @@ const filteredLands = usersWithStatus.filter(
           <tr className="table-heading">
             <th>#</th>
             <th>Land Id</th>
-            <th>Seller Address</th>
             <th>Buyer Address</th>
             <th>Status</th>
-            <th>Tranfer</th>
+            <th>Payment Done</th>
+            <th>Reject</th>
+            <th>Accept</th>
           </tr>
         </thead>
         {currentPosts.map((data, index) => {
@@ -109,21 +104,34 @@ const filteredLands = usersWithStatus.filter(
               <tr key={data.id} className="table-data">
                 <td>{index}</td>
                 <td>{data.landId}</td>
-                <td>{data.sellerId}</td>
-
                 <td>{data.buyerId}</td>
                 <td>{requeststatus[data.requestStatus]}</td>
+                <td>{data.isPaymentDone ? "Paid" : "Not Paid"}</td>
                 <td>
                   <Button
                     variant="outlined"
                     color="error"
                     fontSize={"10px"}
                     disabled={
-                      data.requestStatus === 4
+                      data.requestStatus !== 0
+
                     }
-                    onClick={() => TransferOwner(data.reqId,'mohsin')}
+                    onClick={() => Rejected(data.reqId)}
                   >
-                    Tranfer
+                    Reject
+                  </Button>
+                </td>
+                <td>
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    fontSize={"10px"}
+                    disabled={
+                      data.requestStatus !== 0
+                    }
+                    onClick={() => Accepted(data.reqId)}
+                  >
+                    Accept
                   </Button>
                 </td>
               </tr>
