@@ -11,49 +11,48 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { Button } from "@mui/material";
 
-
 export default function MyLand() {
-    const { contract, currentAccount } = useContext(TransactionContext);
-    const [user,setUsers]=useState([])
-    console.log(contract)
-useEffect(() => {
-  console.log(currentAccount);
-  const Lands = async () => {
-    const allLand = await contract.myAllLands(currentAccount);
-    console.log(allLand);
-    const users = await Promise.all(
-      allLand.map(async (landId) => {
-        const {
-          ownerAddress,
-          landAddress,
-          physicalSurveyNumber,
-          document,
-          isLandVerified,
-          id,
-          isforSell,
-        } = await contract.lands(landId);
-        return {
-          ownerAddress,
-          landAddress,
-          physicalSurveyNumber,
-          document,
-          isLandVerified,
-          id:parseInt(id._hex),
-          isforSell
-          // age: parseInt(age._hex),
-        };
-      })
-    );
+  const { contract, currentAccount } = useContext(TransactionContext);
+  const [user, setUsers] = useState([]);
+  console.log(contract);
+  useEffect(() => {
+    console.log(currentAccount);
+    const Lands = async () => {
+      const allLand = await contract.myAllLands(currentAccount);
+      console.log(allLand);
+      const users = await Promise.all(
+        allLand.map(async (landId) => {
+          const {
+            ownerAddress,
+            landAddress,
+            physicalSurveyNumber,
+            document,
+            isLandVerified,
+            id,
+            isforSell,
+          } = await contract.lands(landId);
+          return {
+            ownerAddress,
+            landAddress,
+            physicalSurveyNumber,
+            document,
+            isLandVerified,
+            id: parseInt(id._hex),
+            isforSell,
+            // age: parseInt(age._hex),
+          };
+        })
+      );
 
-    setUsers(users);
+      setUsers(users);
+    };
+
+    contract && Lands();
+  }, []);
+  console.log(user);
+  const sellLand = async (id) => {
+    await contract.makeItforSell(id);
   };
-
-  contract && Lands();
-}, []);
-console.log(user);
-const sellLand= async(id)=>{
-   await contract.makeItforSell(id);
-}
   return (
     <Container maxWidth="100%" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
@@ -65,9 +64,9 @@ const sellLand= async(id)=>{
             document,
             isLandVerified,
             id,
-            isforSell
+            isforSell,
           } = item;
-        
+
           return (
             <Grid item xs={12} md={4} lg={3} key={id}>
               <Paper
