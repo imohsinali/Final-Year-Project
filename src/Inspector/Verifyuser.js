@@ -22,8 +22,16 @@ export default function VerifyUser() {
         const userAddresses = await contract.ReturnAllUserList();
         const users = await Promise.all(
           userAddresses.map(async (address) => {
-            const {name,city,age,isUserVerified,cinc} = await contract.UserMapping(address)
-            return { address, name,city,age:parseInt(age._hex),isUserVerified,cinc
+            const { name, city, age, isUserVerified, cinc, document } =
+              await contract.UserMapping(address);
+            return {
+              address,
+              name,
+              city,
+              age: parseInt(age._hex),
+              isUserVerified,
+              cinc,
+              document,
             };
           })
         );
@@ -32,7 +40,7 @@ export default function VerifyUser() {
       };
       contract && viewAllUser();
     }, [])
-    console.log(users)
+    console.log('moshin', users)
   
   const handleChange = (event, value) => {
     setCurrentPage(value);
@@ -66,40 +74,40 @@ export default function VerifyUser() {
         </thead>
         {currentPosts.map((data,index)=>{
           return (
-            <tbody >
-             <tr key={data.id} className="table-data" > 
-              <td>
-                {index}
-              </td>
-              <td>
-                {data.address}
-              </td>
-              <td>
-                {data.cinc}
-              </td>
-              <td>
-                {data.name}
-              </td>
-              <td>
-                {data.document}
-              </td>
-              <td>
-                 {
-                  data.isUserVerified?
-                  (<button disabled  className={"sucess-btn btn"}>Verified </button>):
-                  (
-                    <button  onClick={()=>verify(data.address)} className={'btn verify-button'}>verify </button>
-
-                  )
-
-                 } 
-          
-                
-              </td>
-            </tr> 
-            
+            <tbody>
+              <tr key={data.id} className="table-data">
+                <td>{index}</td>
+                <td>{data.address}</td>
+                <td>{data.cinc}</td>
+                <td>{data.name}</td>
+                <td>
+                  <a
+                    href={`https://gateway.pinata.cloud/ipfs/${data.document.substring(
+                      6
+                    )}`}
+                    target='_blank'
+                  >
+                    Veiw Documnet
+                    
+                  </a>
+                </td>
+                <td>
+                  {data.isUserVerified ? (
+                    <button disabled className={"sucess-btn btn"}>
+                      Verified{" "}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => verify(data.address)}
+                      className={"btn verify-button"}
+                    >
+                      verify{" "}
+                    </button>
+                  )}
+                </td>
+              </tr>
             </tbody>
-          )
+          );
         })}
        
       </table>
