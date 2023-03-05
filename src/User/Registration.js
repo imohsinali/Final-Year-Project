@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { TransactionContext } from "../StateMangement/Context";
 
 import { useContext} from "react";
+import { Input, InputLabel } from "@mui/material";
+import axios from "axios";
 const theme = createTheme();
 
 
@@ -29,31 +31,97 @@ const handleSubmit =async (event) => {
 
 event.preventDefault();
 const data = new FormData(event.currentTarget);
-if( data.get("email") &&
-data.get('cnic')&&
-data.get("address")&&
- data.get("name")&&
- data.get("age")&&
- data.get('phone')&&
- data.get('city')&&
- data.get('doc'))
-{
-  // function registerUser(string memory _name, uint _age, string memory _city,string memory _cinc, string memory _document, string memory _email
+if (
+  data.get("name") &&
+  data.get("age") &&
+  data.get("cnic") &&
+  data.get("city") &&
+  data.get("email") &&
+  data.get("profilepic") &&
+  data.get("doc")
+) {
+  console.log(
+    data.get("name"),
+      
+      
+  );
+  const headers = {
+      pinata_api_key: `7cef58394b1f0a591f15`,
+      pinata_secret_api_key: `54098153be2dc5cc4dc335c06b91cbe1dc5dbae086263a764708f16eeee76ad4
 
-  // const transaction = await contract.registerUser(data.get('name'),data.get('age'),data.get('city'), data.get('cinc'),"doc",data.get('email'), { gasLimit: 10000000 });
-  const transaction = await contract.registerUser("mohsin",22,'skd', 'hello',"doc",'email', { gasLimit: 1000000 });
+`,
+      "Content-Type": "multipart/form-data",
+    }
 
-    await transaction.wait();
+const formData1 = new FormData();
+const formData2 = new FormData();
 
-    console.log("Transaction is done");
-    
-    naviagte('/login')
+formData1.append("file", data.get("profilepic"));
+formData2.append("file", data.get("doc"));
 
-  }}
+
+console.log(formData1,formData2);
+              
+
+        const profilePic = await axios({
+          method: "post",
+          url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+          data:formData1,
+          headers:headers
+          
+        });
+        const profileImage = `ipfs://${profilePic.data.IpfsHash}`;
+        const docfile = await axios({
+          method: "post",
+          url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+          data:formData2,
+          headers:headers
+          
+        });
+        const docfileHash = `ipfs://${docfile.data.IpfsHash}`;
+        console.log(docfileHash)
+        console.log(
+          typeof data.get("name"),
+          typeof parseInt(data.get("age")),
+          typeof data.get("city"),
+          typeof data.get("cnic"),
+          typeof docfileHash,
+          typeof profileImage,
+          typeof data.get("email")
+        );
+
+  // function registerUser(string memory _name, uint _age, string memory _city,string memory _cinc, string memory _document, string memory _profilepic, string memory _email
+
+  const transaction = await contract.registerUser(
+    data.get("name"),
+    parseInt(data.get("age")),
+    data.get("city"),
+    data.get("cnic"),
+    docfileHash,
+    profileImage,
+    data.get("email"),
+    // "Mohsin",
+    // 20,
+    // "Kochi",
+    // "CNC",
+    // 'doc',
+    // 'prof',
+    // 'imohian',
+// 
+
+    { gasLimit: 1000000 }
+  );
+
+  await transaction.wait();
+
+  console.log("Transaction is done");
+
+  naviagte("/Userlogin");
+}}
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="sm">
         <CssBaseline />
         <Box
           sx={{
@@ -67,7 +135,7 @@ data.get("address")&&
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Registration
+          User  Registration
           </Typography>
           <Box
             component="form"
@@ -123,18 +191,6 @@ data.get("address")&&
                   autoFocus
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="given-address"
-                  name="address"
-                  required
-                  fullWidth
-                  type="address"
-                  id="address"
-                  label="Address"
-                  autoFocus
-                />
-              </Grid>
 
               <Grid item xs={12}>
                 <TextField
@@ -147,24 +203,32 @@ data.get("address")&&
                 />
               </Grid>
               <Grid item xs={12}>
+                <InputLabel htmlFor="profilepic">Upload your Pic</InputLabel>
+
                 <TextField
+                  autoComplete="profilepic"
+                  name="profilepic"
+                  type="file"
                   required
                   fullWidth
-                  id="phone"
-                  label="Phone no"
-                  name="phone"
-                  autoComplete="phone"
+                  id="profilepic"
+                  accept="image/*"
+                  autoFocus
                 />
               </Grid>
+
               <Grid item xs={12}>
+                <InputLabel htmlFor="doc">Upload your Dcouments</InputLabel>
+
                 <TextField
-                  autoComplete="given-document"
+                  autoComplete="userdoc"
                   name="doc"
                   type="file"
                   required
                   fullWidth
                   id="doc"
                   autoFocus
+                  accept=".pdf, .doc, .docx"
                 />
               </Grid>
             </Grid>
