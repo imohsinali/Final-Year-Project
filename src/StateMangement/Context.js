@@ -5,7 +5,8 @@ import contractABI from "../contract/landregistry.json";
 export const TransactionContext = React.createContext();
 
 const { ethereum } = window;
-const contractAddress="0x0C84632F86C08850Db4BbFC2b2C0f4AddB19EB79"
+// const contractAddress="0x0C84632F86C08850Db4BbFC2b2C0f4AddB19EB79"
+ const contractAddress = "0x71c1a7AE879D0E47d0987E6afd409b79B9Ae8f3D";
 const createEthereumContract = () => {
   const provider = new ethers.providers.Web3Provider(ethereum);
   const signer = provider.getSigner();
