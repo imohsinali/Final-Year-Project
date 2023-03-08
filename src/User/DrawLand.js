@@ -2,15 +2,18 @@ import "./styles.css";
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
-import { Container, TextField, IconButton } from "@mui/material";
+import { Container, TextField, IconButton, Button } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import { TransactionContext } from "../StateMangement/Context";
 
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoibW9oYWluYmFsdGkiLCJhIjoiY2xhNGE2ZWd0MHg4ZTNwbXpiN2Q3a2ZsYiJ9.2J8OizwcJnm4U0Idhsu5IA";
 
-export default function App() {
+export default function DrawLand() {
+      const { setCoordinates } = React.useContext(TransactionContext);
+
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [lng, setLng] = useState(65);
@@ -18,6 +21,7 @@ export default function App() {
   const [zoom, setZoom] = useState(4);
   const [searchText, setSearchText] = useState("");
   const [polygon, setPolygon] = useState([]);
+  const coordinatesString = polygon.map((point) => point.join(",")).join(";");
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -29,8 +33,7 @@ export default function App() {
       height: "calc(100vh - 130px)",
       width: "100%",
     });
-      handleDraw();
-
+    handleDraw();
   });
 
   useEffect(() => {
@@ -100,6 +103,7 @@ export default function App() {
         Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
       </div>
       <div ref={mapContainer} className="map-container" />
+      <Button onClick={() => setCoordinates(coordinatesString)}>Save Land</Button>
     </Container>
   );
 }
