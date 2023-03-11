@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { TransactionContext } from "../StateMangement/Context"
 import { useContext } from "react";
+import { ethers } from "ethers";
 
 const theme = createTheme();
 
@@ -42,52 +43,41 @@ export default function AddLandInspector() {
   const handleSubmit  = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
+console.log(
+  data.get("address"),
+  data.get("name"),
+  data.get("dob") ,
+    data.get("cnic") ,
+    data.get("city") ,
+    data.get("_designation")
+);
     event.preventDefault();
-    if( data.get("email") &&
-    data.get("address")&&
-    data.get("city")&&
-     data.get("name")&&
-     data.get("age")&&
-     data.get('cnic'))
-    {const transaction = await contract.addLandInspector(data.get('address'),data.get('name'),data.get('age'), data.get('city'),data.get('email'), { gasLimit: 1000000 });
-    await transaction.wait();
+    if (
+      data.get("address") &&
+      data.get("name") &&
+      data.get("dob") &&
+      data.get("cnic") &&
+      data.get("city") &&
+      data.get("_designation")
+    ) {
+      // function addLandInspector(address _addr, bytes32 _name, bytes32 _dob, uint _cinc, bytes32 _designation, bytes32 _city) public returns (bool) {
 
-    console.log("Transaction is done");
+      const transaction = await contract.addLandInspector(
+        data.get("address"),
 
+        ethers.utils.formatBytes32String(data.get("name")),
+        ethers.utils.formatBytes32String(data.get("dob")),
+        data.get("cnic"),
+        ethers.utils.formatBytes32String(data.get("_designation")),
+        ethers.utils.formatBytes32String(data.get("city")),
+        { gasLimit: 1000000 }
+      );
+      await transaction.wait();
+
+      console.log("Transaction is done");
     }
       
      
-    //     // let fname="Form Submit Successfully!"
-    //   // let cname="toast-success-container"
-      
-    //     // notify(fname, cname)
-      
-      
-    //   console.log({
-    //     email: data.get("email"),
-    //     address: data.get("address"),
-    //     city:data.get("city"),
-    //     name:data.get("name"),
-    //     age:data.get("age"),
-    //     cnic:data.get('cnic')
-     
-  
-    //   });
-    // }
-    // else{
-       
-    //   // let fname="Form is not Complete!"
-    //   // let cname="toast-danger-container"
-    //   // notify(fname, cname)
-    // }
-    
-    
-
-    // const transaction = await contract.addLandInspector(data.get('address'),data.get('name'),data.get('age'), data.get('city'),data.get('email'), { gasLimit: 10000000 });
-    // await transaction.wait();
-
-    // console.log(transaction);
   };
 
 
@@ -103,7 +93,6 @@ export default function AddLandInspector() {
             alignItems: "center",
           }}
         >
-          
           <Typography component="h1" variant="h5">
             Add Land Inspector
           </Typography>
@@ -111,10 +100,10 @@ export default function AddLandInspector() {
             component="form"
             noValidate
             onSubmit={handleSubmit}
-            sx={{ mt: 2}}
+            sx={{ mt: 2 }}
           >
             <Grid container spacing={2}>
-            <Grid item xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-address"
                   type="string"
@@ -126,7 +115,6 @@ export default function AddLandInspector() {
                   autoFocus
                 />
               </Grid>
-
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
@@ -140,13 +128,13 @@ export default function AddLandInspector() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoComplete="given-age"
-                  name="age"
-                  type="number"
+                  autoComplete="given-dob"
+                  name="dob"
+                  type="string"
                   required
                   fullWidth
-                  id="age"
-                  label="Age"
+                  id="dob"
+                  label="Dath of Brith"
                   autoFocus
                 />
               </Grid>
@@ -154,7 +142,7 @@ export default function AddLandInspector() {
                 <TextField
                   autoComplete="given-Cnic"
                   name="cnic"
-                  type="string"
+                  type="number"
                   required
                   fullWidth
                   id="cinc"
@@ -168,14 +156,26 @@ export default function AddLandInspector() {
                   name="city"
                   required
                   fullWidth
-                  type="address"
+                  type="string"
                   id="city"
                   label="City"
                   autoFocus
                 />
               </Grid>
-
               <Grid item xs={12}>
+                <TextField
+                  autoComplete="given-designation"
+                  name="_designation"
+                  required
+                  fullWidth
+                  type="string"
+                  id="_designation"
+                  label="_designation"
+                  autoFocus
+                />
+              </Grid>
+
+              {/* <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -184,22 +184,19 @@ export default function AddLandInspector() {
                   name="email"
                   autoComplete="email"
                 />
-              </Grid>
-              </Grid>
+              </Grid> */}
+            </Grid>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 1, mb: 2 }}
-            
             >
               Submit
             </Button>
             <div>
-            <ToastContainer />
-      
-      
-          </div>
+              <ToastContainer />
+            </div>
           </Box>
         </Box>
       </Container>
